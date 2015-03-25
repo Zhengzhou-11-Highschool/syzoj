@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <title>SYZOJ</title>
+    <!-- For 360 browser -->
+    <meta name="renderer" content="webkit">
+    <!-- For Baidu Siteapp-->
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <link rel="stylesheet" href=" {{ url_for('static', filename='amazeui.min.css') }} ">
+    <style type="text/css">
+        .am-container {
+        width: 980px !important;
+        max-width: none;
+        }
+        .nav-link{
+        color: #fff;
+        }
+    </style>
+</head>
+
+<body class="am-with-topbar-fixed-top">
+<header class="am-topbar am-topbar-fixed-top">
+    <div class="am-container">
+        <h1 class="am-topbar-brand">
+            <a href="{{ url_for('index') }}">SYZOJ</a>
+        </h1>
+
+        <div class="am-topbar-collapse">
+            <div class="am-topbar-left">
+                <ul class="am-nav am-nav-pills am-topbar-nav">
+                    <li class="{% if tab=='index' %}am-active {% endif %}"><a href="{{ url_for('index') }}"
+                                                                              class="nav-link">首页</a></li>
+                    <li class="{% if tab=='problem_set' %}am-active {% endif %}"><a href="{{ url_for('problem_set') }}">题库</a>
+                    </li>
+                    <li><a href="#">评测</a></li>
+                    <li><a href="#">比赛</a></li>
+                    <li><a href="#">排名</a></li>
+                    <li><a href="#">讨论</a></li>
+                </ul>
+            </div>
+            {% if user %}
+            <div class="am-topbar-right">
+                <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm" onclick="window.location.href('#')">
+                    {{user.nickname}}
+                </button>
+                <button class="am-btn am-btn-secondary am-topbar-btn am-btn-sm" id="logout">注销</button>
+            </div>
+            {% else %}
+            <div class="am-topbar-right">
+                <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm"
+                        onclick="window.location.href='{{ url_for('login')}}'">登陆
+                </button>
+                <button class="am-btn am-btn-secondary am-topbar-btn am-btn-sm"
+                        onclick="window.location.href='{{ url_for('sign_up') }}'">注册
+                </button>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</header>
+
+{% block body %}{% endblock %}
+
+<script src="{{ url_for('static', filename='jquery.min.js') }}"></script>
+<script src="{{ url_for('static', filename='amazeui.min.js') }}"></script>
+<script src="{{ url_for('static', filename='syzoj.js') }}"></script>
+<script type="text/javascript">
+function logout(){
+    //alert($.cookie("session_id"));
+    url='/api/logout?session_id='+$.cookie("session_id");
+    url=encodeURI(url);
+    $.ajax({
+        url : url,
+        type : 'POST',
+        async:false,
+    });
+}
+$(document).ready(function(){
+    $("#logout").click(function(){
+        logout();
+        window.location.href="{{url_for('login')}}";
+    });
+});
+
+
+</script>
+{% block script %}{% endblock %}
+</body>
+</html>

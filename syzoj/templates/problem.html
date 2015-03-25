@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+{% block body %}
+<style type="text/css">
+    .problem-header{
+    text-align: center;
+    }
+</style>
+<div class="am-container am-g">
+    <div class="am-u-sm-12 problem-header">
+        <h1>1.A+B Problem</h1>
+
+        <p>
+            <span class="am-badge am-badge-success am-text-sm">内存限制: 128 MB</span>
+            <span class="am-badge am-badge-warning am-text-sm">时间限制: 1 S</span>
+        </p>
+    </div>
+    <div class="am-u-sm-12">
+        <a class="am-btn am-btn-primary am-btn-sm am-fl" href="#">提交此题</a>
+        <a class="am-btn am-btn-danger am-btn-sm am-fl" href="#">此题提交情况</a>
+    </div>
+    <div class="am-panel am-panel-default am-u-sm-12">
+        <div class="am-panel-hd">
+            <h3 class="am-panel-title">题目描述</h3>
+        </div>
+        <div class="am-panel-bd">
+            <p>给树两个整数a和b。现在请你求出a+b的值。</p>
+        </div>
+        <div class="am-panel-hd">
+            <h3 class="am-panel-title">输入描述</h3>
+        </div>
+        <div class="am-panel-bd">
+            <p>一行两个整数，a和b</p>
+        </div>
+        <div class="am-panel-hd">
+            <h3 class="am-panel-title">输出描述</h3>
+        </div>
+        <div class="am-panel-bd">
+            <p>一行一个整数，a+b的值</p>
+        </div>
+        <div class="am-panel-hd">
+            <h3 class="am-panel-title">测试样例</h3>
+        </div>
+        <div class="am-panel-bd">
+            <p>输入</p>
+            <pre>1</pre>
+            <p>输出</p>
+            <pre>2</pre>
+        </div>
+        <div class="am-panel-hd">
+            <h3 class="am-panel-title">数据范围与提示</h3>
+        </div>
+        <div class="am-panel-bd">
+            <p>1&lt;=a,b&lt;=100000
+        </div>
+    </div>
+</div>
+{% endblock %}
