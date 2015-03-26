@@ -2,12 +2,13 @@ from flask import Flask, jsonify, redirect, url_for, escape, abort, request, ren
 from syzoj import oj
 from syzoj.models import User, Problem, get_problem_by_id
 from syzoj.api import get_user
-from syzoj.views.common import need_login,not_have_permission,show_error
+from syzoj.views.common import need_login, not_have_permission, show_error
 
 
 @oj.route("/problem")
 def problem_set():
-    return render_template("problem_set.html", tab="problem_set", user=get_user())
+    problems=Problem.query.all()
+    return render_template("problem_set.html", tab="problem_set", user=get_user(),problems=problems)
 
 
 @oj.route("/problem/<int:problem_id>")
@@ -18,7 +19,7 @@ def problem(problem_id):
         abort(404)
     if problem.is_allowed_use(user) == False:
         return not_have_permission()
-    return render_template("problem.html", tab="problem_set", user=get_user(),problem=problem)
+    return render_template("problem.html", tab="problem_set", user=get_user(), problem=problem)
 
 
 @oj.route("/problem/<int:problem_id>/edit", methods=["GET", "POST"])
@@ -52,4 +53,4 @@ def edit_problem(problem_id):
 
         return redirect(url_for("problem", problem_id=problem.id))
     else:
-        return render_template("edit_problem.html",problem=problem,user=user)
+        return render_template("edit_problem.html", problem=problem, user=user)

@@ -1,13 +1,13 @@
 {% extends "layout.html" %}
 {% block body %}
 <style type="text/css">
-.down{
-	margin-top: 150px;
-	font-size:2em;
-}
+    .down{
+    margin-top: 150px;
+    font-size:2em;
+    }
 </style>
 <div class="am-container down">
-	<p>{{ info }}</p>
+    <p>{{ info }}</p>
 </div>
 {% endblock %}
 
@@ -16,5 +16,6 @@
 $(document).ready(function(){
 	setTimeout("window.location.href='{{next}}'",2000)
 });
+
 </script>
 {% endblock %}

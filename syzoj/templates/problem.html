@@ -5,12 +5,13 @@
     text-align: center;
     }
     .am-panel-title{
-        font-size: 1.6em;
+    font-size: 1.6em;
     }
 </style>
 <div class="am-container am-g">
     <div class="am-u-sm-12 problem-header">
-        <h1>{{problem.title}}</h1>
+        <h1>{{problem.title}}{% if problem.is_allowed_edit(user) and not problem.is_public %}--[未审核]{% endif %}</h1>
+
         <p>
             <span class="am-badge am-badge-success am-text-sm">内存限制: {{problem.memory_limit}} MB</span>
             <span class="am-badge am-badge-warning am-text-sm">时间限制: {{problem.time_limit}} ms</span>
@@ -22,6 +23,14 @@
         {% if problem.is_allowed_edit(user) %}
         <a class="am-btn am-btn-success am-btn-sm am-fl" href="/problem/{{problem.id}}/edit">编辑题面</a>
         <a class="am-btn am-btn-secondary am-btn-sm am-fl" href="#">上传测试数据</a>
+        {% endif %}
+
+        {% if user.is_admin %}
+            {% if problem.is_public %}
+            <button class="am-btn am-btn-default am-btn-sm am-fr" id="dis_public">取消审核</button>
+            {%else%}
+            <button class="am-btn am-btn-default am-btn-sm am-fr" id="public">通过审核</button>
+            {%endif %}
         {% endif %}
     </div>
     <div class="am-panel am-panel-default am-u-sm-12">
@@ -49,6 +58,11 @@
 function render(tag){
     tag.html(marked(tag.html()));
 }
+marked.setOptions({
+  highlight: function (code) {
+    return "<code>"+code+"</code>";
+  }
+});
 $(document).ready(function(){
     render($("#description"));
     render($("#input"));
@@ -57,5 +71,34 @@ $(document).ready(function(){
     render($("#hint"));
     //$("#description").html(marked($("#description").html()));
 });
+function public_problem(){
+    url='/api/problem/{{problem.id}}/public?session_id='+$.cookie("session_id");
+    url=encodeURI(url);
+    $.ajax({
+        url : url,
+        type : 'POST',
+        async:false,
+    });
+}
+function dis_public_problem(){
+    url='/api/problem/{{problem.id}}/public?session_id='+$.cookie("session_id");
+    url=encodeURI(url);
+    $.ajax({
+        url : url,
+        type : 'DELETE',
+        async:false,
+    });
+}
+$(document).ready(function(){
+    $("#public").click(function(){
+        public_problem();
+        location.reload(true);
+    });
+    $("#dis_public").click(function(){
+        dis_public_problem();
+        location.reload(true);
+    });
+});
+
 </script>
 {% endblock %}

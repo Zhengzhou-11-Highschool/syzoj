@@ -57,17 +57,18 @@ class Problem(db.Model):
         db.session.add(self)
         db.session.commit()
 
-    def is_allowed_edit(self,user):
-        if self.user_id==user.id or user.id_admin:
-            return True
+    def is_allowed_edit(self, user):
+        if user:
+            if self.user_id == user.id or user.id_admin:
+                return True
         else:
             return False
 
-    def is_allowed_use(self,user):
+    def is_allowed_use(self, user):
         if self.is_public:
             return True
         if user:
-            if self.user_id==user.id or user.id_admin:
+            if self.user_id == user.id or user.is_admin:
                 return True
         return False
 

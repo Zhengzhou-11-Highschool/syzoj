@@ -1,15 +1,14 @@
 from syzoj import oj
-from flask import Flask, jsonify, redirect, url_for, request, render_template
-from syzoj.models import User,Session
-import json
-import os, re
+from flask import abort, jsonify, redirect, url_for, request, render_template
+from syzoj.models import User, Session, get_problem_by_id
+import re
 
 
 def get_user(username=None, session_id=None):
     if username == None:
         if session_id == None:
             session_id = request.cookies.get('session_id')
-        sessions=Session.query.filter_by(id=session_id).all()
+        sessions = Session.query.filter_by(id=session_id).all()
         for s in sessions:
             if s.is_valid():
                 return s.user
@@ -18,6 +17,7 @@ def get_user(username=None, session_id=None):
         if user.count():
             return user.first()
     return None
+
 
 def is_valid_username(username):
     if len(username) < 3 or len(username) > 16:
@@ -86,9 +86,9 @@ def api_login():
     elif user.password != password:
         error_code = 1002
     else:
-        session=Session(user)
+        session = Session(user)
         session.save()
-        session_id=session.id
+        session_id = session.id
     return jsonify({"error_code": error_code, "session_id": session_id})
 
 
@@ -96,7 +96,23 @@ def api_login():
 def api_logout():
     session_id = request.args.get('session_id')
     user = get_user(session_id=session_id)
-    sessions=user.sessions.all()
+    sessions = user.sessions.all()
     for s in sessions:
         s.delete()
     return jsonify({"status": "1"})
+
+
+@oj.route("/api/problem/<int:problem_id>/public", methods=["POST", "DELETE"])
+def change_public_attr(problem_id):
+    session_id = request.args.get('session_id')
+    user = get_user(session_id=session_id)
+    problem = get_problem_by_id(problem_id)
+    if problem and user and user.is_admin:
+        if request.method == "POST":
+            problem.is_public = True
+        elif request.method == "DELETE":
+            problem.is_public = False
+        problem.save()
+    else:
+        abort(404)
+    return jsonify({"status":0})
