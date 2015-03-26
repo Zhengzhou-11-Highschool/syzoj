@@ -32,9 +32,9 @@ class Problem(db.Model):
     is_public = db.Column(db.Boolean)
 
     def __init__(self, title, user,
-                 description=None, input_format=None, output_format=None, example=None, limit_and_hint=None,
-                 time_limit=None, memory_limit=None,
-                 tags=None):
+                 description="", input_format="", output_format="", example="", limit_and_hint="",
+                 time_limit=1000, memory_limit=128
+                 ):
         self.title = title
         self.user = user
 
@@ -46,7 +46,6 @@ class Problem(db.Model):
 
         time_limit = time_limit
         memory_limit = memory_limit
-        self.tags = tags
         self.ac_num = 0
         self.submit_num = 0
         self.is_public = False
@@ -57,6 +56,20 @@ class Problem(db.Model):
     def save(self):
         db.session.add(self)
         db.session.commit()
+
+    def is_allowed_edit(self,user):
+        if self.user_id==user.id or user.id_admin:
+            return True
+        else:
+            return False
+
+    def is_allowed_use(self,user):
+        if self.is_public:
+            return True
+        if user:
+            if self.user_id==user.id or user.id_admin:
+                return True
+        return False
 
 
 class ProblemTag(db.Model):

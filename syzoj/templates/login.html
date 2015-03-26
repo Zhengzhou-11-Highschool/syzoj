@@ -1,33 +1,35 @@
 {% extends "layout.html" %}
 {% block body %}
 <div class="am-container am-g">
-    <h1>登陆</h1>
+    <div class="am-u-sm-8 am-u-sm-centered">
+        <h1>登陆</h1>
 
-    <div class="am-alert am-alert-danger am-u-sm-12 center" id="error" data-am-alert hidden>
-        <p id="error_info">没什么可给你，但求凭这阙歌。谢谢你风雨里，都不退愿陪着我。</p>
-    </div>
-    <form class="am-form am-form-horizontal">
-        <div class="am-form-group">
-            <label class="am-u-sm-2 am-form-label">用户名</label>
-
-            <div class="am-u-sm-10">
-                <input type="text" placeholder="请输入用户名" id="username">
-            </div>
+        <div class="am-alert am-alert-danger am-u-sm-12" id="error" data-am-alert hidden>
+            <p id="error_info">没什么可给你，但求凭这阙歌。谢谢你风雨里，都不退愿陪着我。</p>
         </div>
-        <div class="am-form-group">
-            <label class="am-u-sm-2 am-form-label">密码</label>
+        <form class="am-form am-form-horizontal">
+            <div class="am-form-group">
+                <label class="am-u-sm-2 am-form-label">用户名</label>
 
-            <div class="am-u-sm-10">
-                <input type="password" placeholder="请输入密码" id="password">
+                <div class="am-u-sm-10">
+                    <input type="text" placeholder="请输入用户名" id="username">
+                </div>
             </div>
-        </div>
+            <div class="am-form-group">
+                <label class="am-u-sm-2 am-form-label">密码</label>
 
-        <div class="am-form-group">
-            <div class="am-u-sm-10 am-u-sm-offset-2">
-                <p class="am-btn am-btn-default" id="login">登陆</p>
+                <div class="am-u-sm-10">
+                    <input type="password" placeholder="请输入密码" id="password">
+                </div>
             </div>
-        </div>
-    </form>
+
+            <div class="am-form-group">
+                <div class="am-u-sm-10 am-u-sm-offset-2">
+                    <p class="am-btn am-btn-default" id="login">登陆</p>
+                </div>
+            </div>
+        </form>
+    </dsiv>
 </div>
 {% endblock %}
 {% block script %}

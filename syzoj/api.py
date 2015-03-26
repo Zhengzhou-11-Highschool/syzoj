@@ -89,7 +89,7 @@ def api_login():
         session=Session(user)
         session.save()
         session_id=session.id
-    return jsonify({"error_code": error_code, "session_id": session.id})
+    return jsonify({"error_code": error_code, "session_id": session_id})
 
 
 @oj.route("/api/logout", methods=["POST"])

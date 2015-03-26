@@ -1,50 +1,45 @@
 {% extends "layout.html" %}
 {% block body %}
-<style type="text/css">
-    .center{
-    margin-left: 187px;
-    width: 720px;
-    }
-</style>
 <div class="am-container am-g">
-    <h1>注册</h1>
+    <div class="am-u-sm-8 am-u-sm-centered">
+        <h1>注册</h1>
+        <div class="am-alert am-alert-danger am-u-sm-12 center" id="error" data-am-alert hidden>
+            <p id="error_info">没什么可给你，但求凭这阙歌。谢谢你风雨里，都不退愿陪着我。</p>
+        </div>
+        <div class="am-u-sm-12">
+            <form class="am-form am-form-horizontal">
+                <div class="am-form-group">
+                    <label class="am-u-sm-2 am-form-label">用户名</label>
 
-    <div class="am-alert am-alert-danger am-u-sm-12 center" id="error" data-am-alert hidden>
-        <p id="error_info">没什么可给你，但求凭这阙歌。谢谢你风雨里，都不退愿陪着我。</p>
-    </div>
-    <div class="am-u-sm-12">
-        <form class="am-form am-form-horizontal">
-            <div class="am-form-group">
-                <label class="am-u-sm-2 am-form-label">用户名</label>
-
-                <div class="am-u-sm-10">
-                    <input type="text" placeholder="用户名将用于登陆" id="username">
+                    <div class="am-u-sm-10">
+                        <input type="text" placeholder="用户名将用于登陆" id="username">
+                    </div>
                 </div>
-            </div>
-            <div class="am-form-group">
-                <label class="am-u-sm-2 am-form-label">电子邮箱</label>
+                <div class="am-form-group">
+                    <label class="am-u-sm-2 am-form-label">邮箱</label>
 
-                <div class="am-u-sm-10">
-                    <input type="email" placeholder="电子邮箱" id="email">
+                    <div class="am-u-sm-10">
+                        <input type="email" placeholder="电子邮箱" id="email">
+                    </div>
                 </div>
-            </div>
-            <div class="am-form-group">
-                <label class="am-u-sm-2 am-form-label">密码</label>
+                <div class="am-form-group">
+                    <label class="am-u-sm-2 am-form-label">密码</label>
 
-                <div class="am-u-sm-10">
-                    <fieldset class="am-form-set">
-                        <input type="password" placeholder="设置一个密码吧" id="password1">
-                        <input type="password" placeholder="再输入一遍" id="password2">
-                    </fieldset>
+                    <div class="am-u-sm-10">
+                        <fieldset class="am-form-set">
+                            <input type="password" placeholder="设置一个密码吧" id="password1">
+                            <input type="password" placeholder="再输入一遍" id="password2">
+                        </fieldset>
+                    </div>
                 </div>
-            </div>
 
-            <div class="am-form-group">
-                <div class="am-u-sm-10 am-u-sm-offset-2">
-                    <p id="sign_up" class="am-btn am-btn-default">注册</p>
+                <div class="am-form-group">
+                    <div class="am-u-sm-10 am-u-sm-offset-2">
+                        <p id="sign_up" class="am-btn am-btn-default">注册</p>
+                    </div>
                 </div>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
 </div>
 {% endblock %}
