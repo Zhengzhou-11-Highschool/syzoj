@@ -3,4 +3,4 @@ Include
 Lib
 Scripts
 .idea
-/syzoj/test.db
+test.db
