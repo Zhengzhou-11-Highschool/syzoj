@@ -3,3 +3,4 @@ Include
 Lib
 Scripts
 .idea
+*.db

@@ -1,6 +1,6 @@
 from syzoj import oj
 from flask import Flask, jsonify, redirect, url_for, request, render_template
-from syzoj.models import User
+from syzoj.models import User,Session
 import json
 import os, re
 
@@ -9,13 +9,15 @@ def get_user(username=None, session_id=None):
     if username == None:
         if session_id == None:
             session_id = request.cookies.get('session_id')
-        user = User.query.filter_by(session_id=session_id)
+        sessions=Session.query.filter_by(id=session_id).all()
+        for s in sessions:
+            if s.is_valid():
+                return s.user
     else:
         user = User.query.filter_by(username=username)
-    if user.count():
-        return user.first()
+        if user.count():
+            return user.first()
     return None
-
 
 def is_valid_username(username):
     if len(username) < 3 or len(username) > 16:
@@ -84,16 +86,17 @@ def api_login():
     elif user.password != password:
         error_code = 1002
     else:
-        user.make_session_id()
-        user.save()
-        session_id = user.session_id;
-    return jsonify({"error_code": error_code, "session_id": session_id})
+        session=Session(user)
+        session.save()
+        session_id=session.id
+    return jsonify({"error_code": error_code, "session_id": session.id})
 
 
 @oj.route("/api/logout", methods=["POST"])
 def api_logout():
     session_id = request.args.get('session_id')
     user = get_user(session_id=session_id)
-    user.make_session_id()
-    user.save()
+    sessions=user.sessions.all()
+    for s in sessions:
+        s.delete()
     return jsonify({"status": "1"})

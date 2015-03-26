@@ -29,6 +29,7 @@ class Problem(db.Model):
 
     ac_num = db.Column(db.Integer)
     submit_num = db.Column(db.Integer)
+    is_public = db.Column(db.Boolean)
 
     def __init__(self, title, user,
                  description=None, input_format=None, output_format=None, example=None, limit_and_hint=None,
@@ -48,6 +49,7 @@ class Problem(db.Model):
         self.tags = tags
         self.ac_num = 0
         self.submit_num = 0
+        self.is_public = False
 
     def __repr__(self):
         return "<Problem %r>" % self.title
