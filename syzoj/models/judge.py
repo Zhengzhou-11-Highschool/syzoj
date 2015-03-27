@@ -55,6 +55,14 @@ class JudgeState(db.Model):
 
     def pretty_submit_time(self):
         return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(self.submit_time))
+
+def get_judge_by_id(judge_id):
+    judge=JudgeState.query.filter_by(id=judge_id).all()
+    if len(judge):
+        return judge[0]
+    else:
+        return None
+
 class WaitingJudge(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     judge_id = db.Column(db.Integer, db.ForeignKey("judge_state.id"))

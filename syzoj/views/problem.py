@@ -1,8 +1,8 @@
 from flask import Flask, jsonify, redirect, url_for, escape, abort, request, render_template
 from syzoj import oj
 from syzoj.models import User, Problem, get_problem_by_id, File, JudgeState,WaitingJudge
-from syzoj.api import get_user
 from syzoj.views.common import need_login, not_have_permission, show_error
+from syzoj.views import get_user
 from random import randint
 import os
 
@@ -85,3 +85,18 @@ def upload_testdata(problem_id):
     else:
         return render_template("upload_testdata.html", problem=problem,user=user)
 
+
+@oj.route("/api/problem/<int:problem_id>/public", methods=["POST", "DELETE"])
+def change_public_attr(problem_id):
+    session_id = request.args.get('session_id')
+    user = get_user(session_id=session_id)
+    problem = get_problem_by_id(problem_id)
+    if problem and user and user.is_admin:
+        if request.method == "POST":
+            problem.is_public = True
+        elif request.method == "DELETE":
+            problem.is_public = False
+        problem.save()
+    else:
+        abort(404)
+    return jsonify({"status":0})

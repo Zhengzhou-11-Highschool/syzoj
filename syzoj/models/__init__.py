@@ -1,6 +1,6 @@
 from .user import User, Session
 from .problem import Problem, ProblemTag
-from .judge import JudgeState,WaitingJudge
+from .judge import JudgeState,WaitingJudge,get_judge_by_id
 from .contest import Contest
 from .article import Article, Comment
 from .file import File
