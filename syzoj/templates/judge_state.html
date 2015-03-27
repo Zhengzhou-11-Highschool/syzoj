@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class="am-container">
+    <table class="am-table">
+        <thead>
+        <tr>
+            <th>编号</th>
+            <th>题目名称</th>
+            <th>状态</th>
+            <th>分数</th>
+            <th>提交者</th>
+            <th>提交时间</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for judge in judges %}
+            {% set see_result=judge.is_allowed_see_result(user) %}
+            {% set result=judge.result_dict() %}
+            <tr>
+                <td>{{judge.id}}</td>
+                <td><a href="{{url_for('problem',problem_id=judge.problem.id)}}">{{judge.problem.title}}</a></td>
+                {% if see_result %}
+                <td>{{result["status"]}}</td>
+                <td>{{result["score"]}}</td>
+                {% else %}
+                <td>隐藏</td>
+                <td>隐藏</td>
+                {% endif %}
+                <td>{{judge.user.nickname}}</td>
+                <td>{{judge.pretty_submit_time()}}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

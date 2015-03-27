@@ -36,7 +36,7 @@
                                                                               class="nav-link">首页</a></li>
                     <li class="{% if tab=='problem_set' %}am-active {% endif %}"><a href="{{ url_for('problem_set') }}">题库</a>
                     </li>
-                    <li><a href="#">评测</a></li>
+                    <li class="{% if tab=='judge' %}am-active {% endif %}"><a href="{{ url_for('judge_state') }}">评测</a></li>
                     <li><a href="#">比赛</a></li>
                     <li><a href="#">排名</a></li>
                     <li><a href="#">讨论</a></li>

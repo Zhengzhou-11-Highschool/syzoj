@@ -38,3 +38,6 @@ class Contest(db.Model):
     def save(self):
         db.session.add(self)
         db.session.commit()
+
+    def is_running(self,now=int(time.time())):
+        return now<self.start_time and now<self.end_time

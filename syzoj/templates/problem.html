@@ -18,11 +18,11 @@
         </p>
     </div>
     <div class="am-u-sm-12">
-        <a class="am-btn am-btn-primary am-btn-sm am-fl" href="#">提交此题</a>
+        <a class="am-btn am-btn-primary am-btn-sm am-fl" href="{{url_for('submit_code',problem_id=problem.id)}}">提交此题</a>
         <a class="am-btn am-btn-danger am-btn-sm am-fl" href="#">此题提交情况</a>
         {% if problem.is_allowed_edit(user) %}
-        <a class="am-btn am-btn-success am-btn-sm am-fl" href="/problem/{{problem.id}}/edit">编辑题面</a>
-        <a class="am-btn am-btn-secondary am-btn-sm am-fl" href="#">上传测试数据</a>
+        <a class="am-btn am-btn-success am-btn-sm am-fl" href="{{url_for('edit_problem',problem_id=problem.id)}}">编辑题面</a>
+        <a class="am-btn am-btn-secondary am-btn-sm am-fl" href="{{url_for('upload_testdata',problem_id=problem.id)}}">上传测试数据</a>
         {% endif %}
 
         {% if user.is_admin %}

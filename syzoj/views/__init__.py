@@ -4,6 +4,7 @@ from syzoj.models import User
 from syzoj.api import get_user
 from .problem import problem, problem_set
 from .session import sign_up, login
+from .judge import submit_code,judge_state
 
 
 @oj.route("/")

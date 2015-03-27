@@ -63,7 +63,7 @@ class Problem(db.Model):
 
     def is_allowed_edit(self, user):
         if user:
-            if self.user_id == user.id or user.id_admin:
+            if self.user_id == user.id or user.is_admin:
                 return True
         else:
             return False
@@ -74,6 +74,7 @@ class Problem(db.Model):
         if user:
             if self.user_id == user.id or user.is_admin:
                 return True
+            #if it belong a contest  and contest is running,also allow to use
         return False
 
 

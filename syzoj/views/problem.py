@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, redirect, url_for, escape, abort, request, render_template
 from syzoj import oj
-from syzoj.models import User, Problem, get_problem_by_id, File
+from syzoj.models import User, Problem, get_problem_by_id, File, JudgeState,WaitingJudge
 from syzoj.api import get_user
 from syzoj.views.common import need_login, not_have_permission, show_error
 from random import randint
@@ -71,16 +71,17 @@ def upload_testdata(problem_id):
         return not_have_permission()
     if request.method == "POST":
         file = request.files.get("testdata")
-        if not file:
-            return show_error("You have not select file.",url_for("upload_testdata", problem_id=problem_id))
-
-        testdata = File(str(randint(1, int(1e50))) + ".zip")
-        file.save(os.path.join(oj.config["UPLOAD_FOLDER"], testdata.filename))
-        testdata.save()
-
-        problem.testdata =testdata
+        if file:
+            testdata = File(str(randint(1, int(1e50))) + ".zip")
+            file.save(os.path.join(oj.config["UPLOAD_FOLDER"], testdata.filename))
+            testdata.save()
+            problem.testdata =testdata
+        if request.form.get("time_limit"):
+            problem.time_limit=int(request.form.get("time_limit"))
+        if request.form.get("memory_limit"):
+            problem.memory_limit=int(request.form.get("memory_limit"))
         problem.save()
-
-        return redirect(url_for("upload_testdata", problem_id=problem_id),user=user)
+        return redirect(url_for("upload_testdata", problem_id=problem_id))
     else:
         return render_template("upload_testdata.html", problem=problem,user=user)
+

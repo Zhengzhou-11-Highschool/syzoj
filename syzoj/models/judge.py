@@ -1,5 +1,6 @@
 from syzoj import db
 from random import randint
+import json
 import time
 
 
@@ -20,13 +21,14 @@ class JudgeState(db.Model):
 
     submit_time = db.Column(db.Integer)  # googbye at 2038-1-19
 
-    def __int__(self, code, language, user, problem, contest=None, submit_time=int(time.time())):
+    def __init__(self, code, language, user, problem, contest=None, submit_time=int(time.time())):
         self.code = code
         self.language = language
         self.user = user
         self.problem = problem
         self.submit_time = submit_time
         self.contest = contest
+        self.result='{"status": "waiting", "total_time": 0, "total_memory": 0, "score":0, "case": 0}'
 
     def __repr__(self):
         print "<JudgeState %r>" % self.id
@@ -35,7 +37,24 @@ class JudgeState(db.Model):
         db.session.add(self)
         db.session.commit()
 
+    def is_allowed_see_result(self,user):
+        if self.problem.is_allowed_edit(user):
+            return True
+        if self.contest and self.contest.is_running():
+            return False
+        return self.problem.is_public
 
+    def is_allowed_see_code(self,user):
+        if user:
+            if user.is_admin or self.user.id==user.id:
+                return True
+        return self.is_allowed_see_result(user)
+
+    def result_dict(self):
+        return json.loads(self.result)
+
+    def pretty_submit_time(self):
+        return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(self.submit_time))
 class WaitingJudge(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     judge_id = db.Column(db.Integer, db.ForeignKey("judge_state.id"))
