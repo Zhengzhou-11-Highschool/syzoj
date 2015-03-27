@@ -24,6 +24,9 @@ class Problem(db.Model):
     time_limit = db.Column(db.Integer)
     memory_limit = db.Column(db.Integer)
 
+    testdata_id = db.Column(db.String(120), db.ForeignKey("file.id"))
+    testdata = db.relationship("File", backref=db.backref('problems', lazy='dynamic'))
+
     tags = db.relationship('ProblemTag', secondary=tags_table,
                            backref=db.backref('problems', lazy='dynamic'))
 
@@ -44,8 +47,9 @@ class Problem(db.Model):
         self.example = example
         self.limit_and_hint = limit_and_hint
 
-        time_limit = time_limit
-        memory_limit = memory_limit
+        self.time_limit = time_limit
+        self.memory_limit = memory_limit
+
         self.ac_num = 0
         self.submit_num = 0
         self.is_public = False

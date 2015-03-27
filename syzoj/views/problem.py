@@ -1,14 +1,16 @@
 from flask import Flask, jsonify, redirect, url_for, escape, abort, request, render_template
 from syzoj import oj
-from syzoj.models import User, Problem, get_problem_by_id
+from syzoj.models import User, Problem, get_problem_by_id, File
 from syzoj.api import get_user
 from syzoj.views.common import need_login, not_have_permission, show_error
+from random import randint
+import os
 
 
 @oj.route("/problem")
 def problem_set():
-    problems=Problem.query.all()
-    return render_template("problem_set.html", tab="problem_set", user=get_user(),problems=problems)
+    problems = Problem.query.all()
+    return render_template("problem_set.html", tab="problem_set", user=get_user(), problems=problems)
 
 
 @oj.route("/problem/<int:problem_id>")
@@ -54,3 +56,31 @@ def edit_problem(problem_id):
         return redirect(url_for("problem", problem_id=problem.id))
     else:
         return render_template("edit_problem.html", problem=problem, user=user)
+
+
+@oj.route("/problem/<int:problem_id>/upload", methods=["GET", "POST"])
+def upload_testdata(problem_id):
+    user = get_user()
+    if not user:
+        return need_login()
+
+    problem = get_problem_by_id(problem_id)
+    if not problem:
+        abort(404)
+    if problem.is_allowed_edit(user) == False:
+        return not_have_permission()
+    if request.method == "POST":
+        file = request.files.get("testdata")
+        if not file:
+            return show_error("You have not select file.",url_for("upload_testdata", problem_id=problem_id))
+
+        testdata = File(str(randint(1, int(1e50))) + ".zip")
+        file.save(os.path.join(oj.config["UPLOAD_FOLDER"], testdata.filename))
+        testdata.save()
+
+        problem.testdata =testdata
+        problem.save()
+
+        return redirect(url_for("upload_testdata", problem_id=problem_id),user=user)
+    else:
+        return render_template("upload_testdata.html", problem=problem,user=user)
