@@ -31,7 +31,7 @@ class JudgeState(db.Model):
         self.submit_time = submit_time
         self.contest = contest
 
-        self.result='{"status": "waiting", "total_time": 0, "total_memory": 0, "score":0, "case": 0}'
+        self.result='{"status": "Waiting", "total_time": 0, "total_memory": 0, "score":0, "case": 0}'
 
     def __repr__(self):
         print "<JudgeState %r>" % self.id

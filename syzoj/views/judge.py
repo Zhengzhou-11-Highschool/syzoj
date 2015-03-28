@@ -28,7 +28,7 @@ def submit_code(problem_id):
         judge.save()
         waiting=WaitingJudge(judge)
         waiting.save()
-        return redirect(url_for("judge_state",problem_id=problem.id))
+        return redirect(url_for("judge_detail",judge_id=judge.id))
     else:
         return render_template("submit.html",problem=problem,user=user,tab="judge")
 
@@ -77,3 +77,10 @@ def update_judge_info(judge_id):
         judge.problem.save()
         judge.user.save()
     return jsonify({"status":1})
+
+@oj.route("/judge_detail/<int:judge_id>")
+def judge_detail(judge_id):
+    judge=get_judge_by_id(judge_id)
+    if not judge:
+        abort(404)
+    return render_template("judge_detail.html",judge=judge,user=get_user(),tostr=str)

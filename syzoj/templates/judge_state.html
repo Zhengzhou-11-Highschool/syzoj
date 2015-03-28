@@ -21,8 +21,15 @@
                 <td>{{judge.id}}</td>
                 <td><a href="{{url_for('problem',problem_id=judge.problem.id)}}">{{judge.problem.title}}</a></td>
                 {% if see_result %}
+                
                 <td>{{result["status"]}}</td>
+
+                {% if judge.is_allowed_see_code(user) %}
+                <td><a href="{{url_for('judge_detail',judge_id=judge.id)}}">{{result["score"]}}</a></td>
+                {% else %}
                 <td>{{result["score"]}}</td>
+                {% endif %}
+
                 <td>{{result["total_time"]}}</td>
                 {% else %}
                 <td>隐藏</td>
