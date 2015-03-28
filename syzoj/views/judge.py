@@ -70,10 +70,11 @@ def update_judge_info(judge_id):
 
     if judge.is_allowed_see_result(None):
         print "allow_to_see"
-        judge.problem.ac_num+=1
         judge.problem.submit_num+=1
-        judge.user.ac_num+=1
         judge.user.submit_num+=1
+        if int(judge.result_dict()["score"])==100:
+            judge.user.ac_num+=1
+            judge.problem.ac_num+=1
         judge.problem.save()
         judge.user.save()
     return jsonify({"status":1})
