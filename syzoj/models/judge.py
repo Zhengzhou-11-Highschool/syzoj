@@ -21,13 +21,16 @@ class JudgeState(db.Model):
 
     submit_time = db.Column(db.Integer)  # googbye at 2038-1-19
 
-    def __init__(self, code, language, user, problem, contest=None, submit_time=int(time.time())):
+    def __init__(self, code, language, user, problem, contest=None, submit_time=None):
+        if not submit_time:
+            submit_time=int(time.time())
         self.code = code
         self.language = language
         self.user = user
         self.problem = problem
         self.submit_time = submit_time
         self.contest = contest
+
         self.result='{"status": "waiting", "total_time": 0, "total_memory": 0, "score":0, "case": 0}'
 
     def __repr__(self):
@@ -56,12 +59,7 @@ class JudgeState(db.Model):
     def pretty_submit_time(self):
         return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(self.submit_time))
 
-def get_judge_by_id(judge_id):
-    judge=JudgeState.query.filter_by(id=judge_id).all()
-    if len(judge):
-        return judge[0]
-    else:
-        return None
+
 
 class WaitingJudge(db.Model):
     id = db.Column(db.Integer, primary_key=True)

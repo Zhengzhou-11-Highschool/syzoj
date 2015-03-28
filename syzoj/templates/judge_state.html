@@ -8,6 +8,7 @@
             <th>题目名称</th>
             <th>状态</th>
             <th>分数</th>
+            <th>总时间</th>
             <th>提交者</th>
             <th>提交时间</th>
         </tr>
@@ -22,7 +23,9 @@
                 {% if see_result %}
                 <td>{{result["status"]}}</td>
                 <td>{{result["score"]}}</td>
+                <td>{{result["total_time"]}}</td>
                 {% else %}
+                <td>隐藏</td>
                 <td>隐藏</td>
                 <td>隐藏</td>
                 {% endif %}

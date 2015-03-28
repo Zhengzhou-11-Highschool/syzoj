@@ -39,5 +39,7 @@ class Contest(db.Model):
         db.session.add(self)
         db.session.commit()
 
-    def is_running(self,now=int(time.time())):
+    def is_running(self,now=None):
+        if not now:
+            now=int(time.time())
         return now<self.start_time and now<self.end_time

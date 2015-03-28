@@ -14,7 +14,7 @@
         {% for problem in problems %}
             {% if problem.is_public or problem.is_allowed_edit(user)%}
             <tr>
-                <td>1</td>
+                <td>{{problem.id}}</td>
                 <td><a href="{{url_for('problem',problem_id=problem.id)}}">{{problem.title}}{% if problem.is_allowed_edit(user) and not problem.is_public %}--[未审核]{% endif %}</a></td>
                 <td>{{problem.ac_num}}</td>
                 <td>{{problem.submit_num}}</td>

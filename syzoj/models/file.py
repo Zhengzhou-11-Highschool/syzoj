@@ -32,7 +32,7 @@ class File(db.Model):
         for i in range(0, len(lines)):
             lines[i] = lines[i].replace('\r', '').replace('\n', '')
 
-        if len(lines) !=3 :
+        if len(lines) <3 :
             return (False,"data_rule.txt should include 3 lines")
 
         data_no=lines[0].split()
@@ -42,6 +42,7 @@ class File(db.Model):
         ret=[]
 
         for i in data_no:
+            i=int(i)
             input_file=input_name.replace('#',str(i))
             output_file=output_name.replace('#',str(i))
             if input_file not in file_list:

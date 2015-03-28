@@ -1,8 +1,7 @@
 from flask import Flask, jsonify, redirect, url_for, escape, abort, request, render_template
 from syzoj import oj,db
-from syzoj.models import get_problem_by_id,  JudgeState,WaitingJudge,get_judge_by_id
+from syzoj.models import get_problem_by_id,  JudgeState,WaitingJudge,get_judge_by_id, get_user
 from syzoj.views.common import need_login, not_have_permission, show_error
-from syzoj.views import get_user
 from random import randint
 import os
 
@@ -41,29 +40,40 @@ def judge_state():
 @oj.route("/api/waiting_judge", methods=["GET"])
 def get_judge_info():
     session_id = request.args.get('session_id')
-    user = get_user(session_id=session_id)
-    if not user.is_admin:
+    if oj.config["JUDGE_TOKEN"]!=session_id:
         abort(404)
 
-    waiting_judges=WaitingJudge.query.all()
-    if not len(waiting_judges):
+    waiting_judge=WaitingJudge.query.first()
+    if not waiting_judge:
         return jsonify({"have_task":0})
-    waiting_judge=waiting_judges[0]
     judge=waiting_judge.judge
-    #waiting_judge.delete()
+    waiting_judge.delete()
 
     return jsonify({"have_task":1,
                     "judge_id":judge.id,
                     "code":judge.code,
                     "language":judge.language,
-                    "testdate":judge.problem.testdata.filename})
+                    "testdata":judge.problem.testdata.filename,
+                    "time_limit":judge.problem.time_limit,
+                    "memory_limit":judge.problem.memory_limit})
 
 @oj.route("/api/update_judge/<int:judge_id>", methods=["POST"])
 def update_judge_info(judge_id):
     judge=get_judge_by_id(judge_id)
-    if not judge:
+    session_id = request.args.get('session_id')
+    if oj.config["JUDGE_TOKEN"]!=session_id:
         abort(404)
-    print request.data
-    #judge.result=request.data
-    #judge.save()
+
+    print request.form["result"]
+    judge.result=request.form["result"]
+    judge.save()
+
+    if judge.is_allowed_see_result(None):
+        print "allow_to_see"
+        judge.problem.ac_num+=1
+        judge.problem.submit_num+=1
+        judge.user.ac_num+=1
+        judge.user.submit_num+=1
+        judge.problem.save()
+        judge.user.save()
     return jsonify({"status":1})

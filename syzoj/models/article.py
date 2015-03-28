@@ -19,7 +19,9 @@ class Article(db.Model):
     comments_num = db.Column(db.Integer)
     allow_comment = db.Column(db.Boolean)
 
-    def __init__(self, title, content, user, allow_comment=True, public_time=int(time.time())):
+    def __init__(self, title, content, user, allow_comment=True, public_time=None):
+        if not public_time:
+            public_time=int(time.time())
         self.title = title
         self.content = content
         self.user = user
@@ -27,6 +29,7 @@ class Article(db.Model):
         self.update_time = public_time
         self.comments_num = 0
         self.allow_comment = allow_comment
+
 
     def __repr__(self):
         return "<Article %r>" % self.title
@@ -48,11 +51,14 @@ class Comment(db.Model):
 
     public_time = db.Column(db.Integer)  # googbye at 2038-1-19
 
-    def __init__(self, content, article, user, public_time=int(time.time())):
+    def __init__(self, content, article, user, public_time=None):
+        if not public_time:
+            public_time=int(time.time())
         self.content = content
         self.article = article
         self.user = user
         self.public_time = public_time
+
 
     def __repr__(self):
         return "<Comment %r>" % self.content

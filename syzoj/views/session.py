@@ -1,21 +1,7 @@
 from flask import Flask, jsonify, redirect, url_for, escape, request, render_template
 from syzoj import oj
-from syzoj.models import User,Session
+from syzoj.models import User,Session,get_user
 import re
-
-def get_user(username=None, session_id=None):
-    if username == None:
-        if session_id == None:
-            session_id = request.cookies.get('session_id')
-        sessions = Session.query.filter_by(id=session_id).all()
-        for s in sessions:
-            if s.is_valid():
-                return s.user
-    else:
-        user = User.query.filter_by(username=username)
-        if user.count():
-            return user.first()
-    return None
 
 @oj.route("/login")
 def login():

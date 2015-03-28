@@ -1,8 +1,7 @@
 from flask import Flask, jsonify, redirect, url_for, escape, abort, request, render_template
 from syzoj import oj
-from syzoj.models import User, Problem, get_problem_by_id, File, JudgeState,WaitingJudge
+from syzoj.models import User, Problem, get_problem_by_id, File, JudgeState,WaitingJudge, get_user
 from syzoj.views.common import need_login, not_have_permission, show_error
-from syzoj.views import get_user
 from random import randint
 import os
 
@@ -40,9 +39,7 @@ def edit_problem(problem_id):
                               url_for("edit_problem", problem_id=problem_id))
 
         if not problem:
-            problem = Problem(user=user,
-                              title=request.form.get("title")
-                              )
+            problem = Problem(user=user,title=request.form.get("title"))
 
         problem.title = request.form.get("title")
         problem.description = request.form.get("description")

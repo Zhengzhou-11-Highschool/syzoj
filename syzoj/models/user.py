@@ -1,4 +1,5 @@
 from syzoj import db
+
 from random import randint
 import time
 
@@ -48,6 +49,9 @@ class User(db.Model):
     nameplate = db.Column(db.Text)
     information = db.Column(db.Text)
 
+    ac_num = db.Column(db.Integer)
+    submit_num = db.Column(db.Integer)
+
     is_admin = db.Column(db.Boolean)
 
     def __init__(self, username, password, email):
@@ -57,6 +61,8 @@ class User(db.Model):
 
         self.nickname = username
         self.is_admin = False
+        self.ac_num=0
+        self.submit_num=0
 
     def __repr__(self):
         return "<User:%r password:%r email:%r>" % (self.username, self.password, self.email)
