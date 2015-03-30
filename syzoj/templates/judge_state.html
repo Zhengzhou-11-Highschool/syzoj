@@ -1,46 +1,103 @@
 {% extends "layout.html" %}
 {% block body %}
+<hr />
 <div class="am-container">
-    <table class="am-table">
-        <thead>
-        <tr>
-            <th>编号</th>
-            <th>题目名称</th>
-            <th>状态</th>
-            <th>分数</th>
-            <th>总时间</th>
-            <th>提交者</th>
-            <th>提交时间</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for judge in judges %}
-            {% set see_result=judge.is_allowed_see_result(user) %}
-            {% set result=judge.result_dict() %}
+    <form class="am-form-inline am-u-sm-8 " role="form" method="get" action="{{url_for('judge_state')}}">
+        <div class="am-form-group am-fl">
+            <input type="text" class="am-form-field am-input-sm" name="submitter" placeholder="提交者" value="{% if submitter %}{{submitter}}{% endif %}">
+        </div>
+        <div class="am-form-group am-fl">
+            <input type="number" class="am-form-field am-input-sm" name="problem_id" placeholder="题目编号", value="{% if problem_id %}{{problem_id}}{% endif %}">
+        </div>
+        <button type="submit" class="am-btn am-btn-primary am-input-sm am-fl">搜索</button>
+    </form>
+    <div class="am-u-sm-4">
+        <a class="am-btn am-btn-success am-input-sm am-fr" href="{{url_for('judge_state')}}?{{encode({'submitter':user.nickname})}}">我的提交</a>
+    </div>
+    <hr />
+    <div class="am-u-sm-12">
+        <table class="am-table">
+            <thead>
             <tr>
-                <td>{{judge.id}}</td>
-                <td><a href="{{url_for('problem',problem_id=judge.problem.id)}}">{{judge.problem.title}}</a></td>
-                {% if see_result %}
-                
-                <td>{{result["status"]}}</td>
-
-                {% if judge.is_allowed_see_code(user) %}
-                <td><a href="{{url_for('judge_detail',judge_id=judge.id)}}">{{result["score"]}}</a></td>
-                {% else %}
-                <td>{{result["score"]}}</td>
-                {% endif %}
-
-                <td>{{result["total_time"]}}</td>
-                {% else %}
-                <td>隐藏</td>
-                <td>隐藏</td>
-                <td>隐藏</td>
-                {% endif %}
-                <td>{{judge.user.nickname}}</td>
-                <td>{{judge.pretty_submit_time()}}</td>
+                <th>编号</th>
+                <th>题目名称</th>
+                <th>状态</th>
+                <th>分数</th>
+                <th>总时间</th>
+                <th>提交者</th>
+                <th>提交时间</th>
             </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+            {% for judge in judges %}
+                {% set see_result=judge.is_allowed_see_result(user) %}
+                {% set result=judge.result_dict() %}
+                <tr>
+                    <td>{{judge.id}}</td>
+                    <td><a href="{{url_for('problem',problem_id=judge.problem.id)}}">{{judge.problem.title}}</a></td>
+                    {% if see_result %}
+                    
+                    <td>{{result["status"]}}</td>
+
+                    {% if judge.is_allowed_see_code(user) %}
+                    <td><a href="{{url_for('judge_detail',judge_id=judge.id)}}">{{result["score"]}}</a></td>
+                    {% else %}
+                    <td>{{result["score"]}}</td>
+                    {% endif %}
+
+                    <td>{{result["total_time"]}}</td>
+                    {% else %}
+                    <td>隐藏</td>
+                    <td>隐藏</td>
+                    <td>隐藏</td>
+                    {% endif %}
+                    <td>{{judge.user.nickname}}</td>
+                    <td>{{judge.pretty_submit_time()}}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <hr />
+    <div class="am-u-12">
+        <ul class="am-pagination am-pagination-centered">
+            <li class="{% if not sorter.have_pre() %}am-disabled{% endif %} ">
+                <a href="{{url_for('judge_state')}}?{{encode(
+                {'submitter':submiter,
+                'problem_id':problem_id,
+                'page':sorter.cur_page-1}
+                )}}">
+                <span class="am-icon-angle-double-left"></span></a></li>
+
+            {% if sorter.need_omit_left()%}
+            <li><span>...</span></li>
+            {% endif %}
+
+            {% for id in sorter.range()%}
+            <li class="{% if id==sorter.cur_page %}am-active{% endif %}">
+            <a href="{{url_for('judge_state')}}?{{encode(
+                {'submitter':submiter,
+                'problem_id':problem_id,
+                'page':id}
+                )}}">{{id}}</a></li>
+            {% endfor %}
+
+            {% if sorter.need_omit_right()%}
+            <li><span>...</span></li>
+            <li><a href="{{url_for('judge_state')}}?{{encode(
+                {'submitter':submiter,
+                'problem_id':problem_id,
+                'page':sorter.total_page}
+                )}}">{{sorter.total_page}}</a></li>
+            {% endif %}
+
+            <li class="{% if not sorter.have_next() %}am-disabled{% endif %} ">
+                <a href="{{url_for('judge_state')}}?{{encode(
+                {'submitter':submiter,
+                'problem_id':problem_id,
+                'page':sorter.cur_page+1}
+                )}}"><span class="am-icon-angle-double-right"></span></a></li>
+        </ul>
+    </div>
 </div>
 {% endblock %}
