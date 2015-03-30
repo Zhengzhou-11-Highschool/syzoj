@@ -1,7 +1,8 @@
 from flask import Flask, jsonify, redirect, url_for, escape, abort, request, render_template
 from syzoj import oj,db
-from syzoj.models import get_problem_by_id,  JudgeState,WaitingJudge,get_judge_by_id, get_user
-from syzoj.views.common import need_login, not_have_permission, show_error
+from syzoj.models import get_problem_by_id,  JudgeState,WaitingJudge,get_judge_by_id, get_user, User
+from syzoj.views.common import need_login, not_have_permission, show_error, Paginate
+from urllib import urlencode
 from random import randint
 import os
 
@@ -32,10 +33,29 @@ def submit_code(problem_id):
     else:
         return render_template("submit.html",problem=problem,user=user,tab="judge")
 
+
+
 @oj.route("/judge_state")
 def judge_state():
-    judges=JudgeState.query.order_by(db.desc(JudgeState.id)).all()
-    return render_template("judge_state.html",user=get_user(),judges=judges,tab="judge")
+    query=JudgeState.query.order_by(db.desc(JudgeState.id))
+    nickname=request.args.get("submitter")
+    problem_id=request.args.get("problem_id")
+    if request.args.get("submitter"):
+        submitter=User.query.filter_by(nickname=nickname).first()
+        if submitter:
+            submitter_id=submitter.id
+        else:
+            submitter_id=0
+        query=query.filter_by(user_id=submitter_id)
+    if request.args.get("problem_id"):
+        query=query.filter_by(problem_id=int(problem_id))
+    sorter=Paginate(query,cur_page=request.args.get("page"),edge_display_num=3)
+    if not nickname:
+        nickname=""
+    if not problem_id:
+        problem_id=""
+    return render_template("judge_state.html",user=get_user(),judges=sorter.get(),tab="judge",
+                           submitter=nickname,problem_id=problem_id,encode=urlencode,sorter=sorter)
 
 @oj.route("/api/waiting_judge", methods=["GET"])
 def get_judge_info():

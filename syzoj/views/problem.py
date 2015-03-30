@@ -3,6 +3,7 @@ from syzoj import oj
 from syzoj.models import User, Problem, get_problem_by_id, File, JudgeState,WaitingJudge, get_user
 from syzoj.views.common import need_login, not_have_permission, show_error
 from random import randint
+from urllib import urlencode
 import os
 
 
@@ -20,7 +21,7 @@ def problem(problem_id):
         abort(404)
     if problem.is_allowed_use(user) == False:
         return not_have_permission()
-    return render_template("problem.html", tab="problem_set", user=get_user(), problem=problem)
+    return render_template("problem.html", tab="problem_set", user=get_user(), problem=problem,encode=urlencode)
 
 
 @oj.route("/problem/<int:problem_id>/edit", methods=["GET", "POST"])

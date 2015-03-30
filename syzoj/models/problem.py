@@ -3,19 +3,19 @@ from random import randint
 import time
 
 tags_table = db.Table('problem_tags',
-                      db.Column('tag_id', db.Integer, db.ForeignKey('problem_tag.id')),
-                      db.Column('problem_id', db.Integer, db.ForeignKey('problem.id'))
+                      db.Column('tag_id', db.Integer, db.ForeignKey('problem_tag.id'),index=True),
+                      db.Column('problem_id', db.Integer, db.ForeignKey('problem.id'),index=True)
                       )
 
 
 class Problem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
-    title = db.Column(db.String(80))
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    title = db.Column(db.String(80),index=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"),index=True)
     user = db.relationship("User", backref=db.backref("upload_problems", lazy='dynamic'))
 
-    description = db.Column(db.Text)
+    description = db.Column(db.Text,index=True)
     input_format = db.Column(db.Text)
     output_format = db.Column(db.Text)
     example = db.Column(db.Text)
@@ -24,7 +24,7 @@ class Problem(db.Model):
     time_limit = db.Column(db.Integer)
     memory_limit = db.Column(db.Integer)
 
-    testdata_id = db.Column(db.String(120), db.ForeignKey("file.id"))
+    testdata_id = db.Column(db.String(120), db.ForeignKey("file.id"),index=True)
     testdata = db.relationship("File", backref=db.backref('problems', lazy='dynamic'))
 
     tags = db.relationship('ProblemTag', secondary=tags_table,
@@ -80,7 +80,7 @@ class Problem(db.Model):
 
 class ProblemTag(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(80))
+    name = db.Column(db.String(80),index=True)
 
     def __init__(self, name):
         self.name = name

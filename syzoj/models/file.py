@@ -6,7 +6,7 @@ import time
 
 class File(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    filename = db.Column(db.String(120), unique=True)
+    filename = db.Column(db.String(120), unique=True, index=True)
 
     def __init__(self, filename):
         self.filename = filename

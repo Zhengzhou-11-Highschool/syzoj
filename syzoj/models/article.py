@@ -8,13 +8,14 @@ class Article(db.Model):
     title = db.Column(db.String(80))
     content = db.Column(db.Text)
 
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), index=True)
     user = db.relationship("User", backref=db.backref("articles", lazy='dynamic'))
 
     public_time = db.Column(db.Integer)  # googbye at 2038-1-19
     update_time = db.Column(db.Integer)
+    sort_time=db.Column(db.Integer,index=True)
 
-    tag = db.Column(db.Text)
+    tag = db.Column(db.Text,index=True)
 
     comments_num = db.Column(db.Integer)
     allow_comment = db.Column(db.Boolean)
@@ -43,10 +44,10 @@ class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.Text)
 
-    article_id = db.Column(db.Integer, db.ForeignKey("article.id"))
+    article_id = db.Column(db.Integer, db.ForeignKey("article.id"),index=True)
     article = db.relationship("Article", backref=db.backref("comments", lazy='dynamic'))
 
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"),index=True)
     user = db.relationship("User", backref=db.backref("comments", lazy='dynamic'))
 
     public_time = db.Column(db.Integer)  # googbye at 2038-1-19

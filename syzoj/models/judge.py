@@ -10,13 +10,13 @@ class JudgeState(db.Model):
     language = db.Column(db.String(20))
     result = db.Column(db.Text)
 
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), index=True)
     user = db.relationship("User", backref=db.backref("submit", lazy='dynamic'))
 
-    problem_id = db.Column(db.Integer, db.ForeignKey("problem.id"))
+    problem_id = db.Column(db.Integer, db.ForeignKey("problem.id"), index=True)
     problem = db.relationship("Problem", backref=db.backref("submit", lazy='dynamic'))
 
-    contest_id = db.Column(db.Integer, db.ForeignKey("contest.id"))
+    contest_id = db.Column(db.Integer, db.ForeignKey("contest.id"), index=True)
     contest = db.relationship("Contest", backref=db.backref("judges", lazy='dynamic'))
 
     submit_time = db.Column(db.Integer)  # googbye at 2038-1-19
@@ -63,7 +63,7 @@ class JudgeState(db.Model):
 
 class WaitingJudge(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    judge_id = db.Column(db.Integer, db.ForeignKey("judge_state.id"))
+    judge_id = db.Column(db.Integer, db.ForeignKey("judge_state.id"), index=True)
     judge = db.relationship("JudgeState", backref=db.backref("waiting_judge", lazy="dynamic"))
 
     def __init__(self, judge):
