@@ -8,6 +8,8 @@ class JudgeState(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     code = db.Column(db.Text)
     language = db.Column(db.String(20))
+
+    status=db.Column(db.String(50))
     result = db.Column(db.Text)
 
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), index=True)
@@ -31,6 +33,7 @@ class JudgeState(db.Model):
         self.submit_time = submit_time
         self.contest = contest
 
+        self.status="Waiting"
         self.result='{"status": "Waiting", "total_time": 0, "total_memory": 0, "score":0, "case": 0}'
 
     def __repr__(self):
@@ -63,7 +66,7 @@ class JudgeState(db.Model):
 
 class WaitingJudge(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    judge_id = db.Column(db.Integer, db.ForeignKey("judge_state.id"), index=True)
+    judge_id = db.Column(db.Integer, db.ForeignKey("judge_state.id"))
     judge = db.relationship("JudgeState", backref=db.backref("waiting_judge", lazy="dynamic"))
 
     def __init__(self, judge):

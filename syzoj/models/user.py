@@ -1,5 +1,5 @@
 from syzoj import db
-
+import urllib, hashlib
 from random import randint
 import time
 
@@ -57,6 +57,11 @@ class User(db.Model):
     submit_num = db.Column(db.Integer)
 
     is_admin = db.Column(db.Boolean)
+
+    def get_gravatar_url(self,size=40):
+        url = "http://cn.gravatar.com/avatar/" + hashlib.md5(self.email.lower()).hexdigest() + "?"
+        url += urllib.urlencode({'d':'mm','s':str(size)})
+        return url
 
     def __init__(self, username, password, email):
         self.username = username

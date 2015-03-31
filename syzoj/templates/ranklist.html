@@ -1,0 +1,61 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class="am-container am-g">
+    <h1>排名</h1>
+    <div class="am-u-sm-12">
+	    <table class="am-table">
+	        <thead>
+	        <tr>
+	            <th>排名</th>
+	            <th>用户昵称</th>
+	            <th>个性签名</th>
+	            <th>通过数量</th>
+	        </tr>
+	        </thead>
+	        <tbody>
+	        {% set rank=sorter.per_page*(sorter.cur_page-1)+1%}
+	        {% for user in users%}
+		        <tr>
+		        	<td>{{rank}}</td> {%set rank=rank+1%}
+		        	<td><a href="{{url_for('user',user_id=user.id)}}">{{user.nickname}}</a>{% if user.nameplate %}{{user.nameplate|safe}}{% endif %}</td>
+		        	<td>{% if user.information%}{{user.information}}{%endif%}</td>
+		        	<td>{{user.ac_num}}</td>
+		        </tr>
+		     {% endfor %}
+	        </tbody>
+	    </table>
+	</div>
+	<div class="am-u-sm-12">
+        <ul class="am-pagination am-pagination-centered">
+            <li class="{% if not sorter.have_pre() %}am-disabled{% endif %} ">
+                <a href="{{url_for('ranklist')}}?{{encode(
+                {'page':sorter.cur_page-1}
+                )}}">
+                <span class="am-icon-angle-double-left"></span></a></li>
+
+            {% if sorter.need_omit_left()%}
+            <li><span>...</span></li>
+            {% endif %}
+
+            {% for id in sorter.range()%}
+            <li class="{% if id==sorter.cur_page %}am-active{% endif %}">
+            <a href="{{url_for('ranklist')}}?{{encode(
+                {'page':id}
+                )}}">{{id}}</a></li>
+            {% endfor %}
+
+            {% if sorter.need_omit_right()%}
+            <li><span>...</span></li>
+            <li><a href="{{url_for('judge_state')}}?{{encode(
+                {'page':sorter.total_page}
+                )}}">{{sorter.total_page}}</a></li>
+            {% endif %}
+
+            <li class="{% if not sorter.have_next() %}am-disabled{% endif %} ">
+                <a href="{{url_for('ranklist')}}?{{encode(
+                {'page':sorter.cur_page+1}
+                )}}"><span class="am-icon-angle-double-right"></span></a></li>
+        </ul>
+	</div>
+</div>
+{%endblock%}

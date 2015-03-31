@@ -86,6 +86,7 @@ def update_judge_info(judge_id):
 
     print request.form["result"]
     judge.result=request.form["result"]
+    judge.status=judge.result_dict()["status"]
     judge.save()
 
     if judge.is_allowed_see_result(None):

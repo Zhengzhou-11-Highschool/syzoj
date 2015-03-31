@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block body %}
-<hr />
-<div class="am-container">
+<div class="am-container am-g">
+    <h1>评测记录</h1>
     <form class="am-form-inline am-u-sm-8 " role="form" method="get" action="{{url_for('judge_state')}}">
         <div class="am-form-group am-fl">
             <input type="text" class="am-form-field am-input-sm" name="submitter" placeholder="提交者" value="{% if submitter %}{{submitter}}{% endif %}">
@@ -14,7 +14,6 @@
     <div class="am-u-sm-4">
         <a class="am-btn am-btn-success am-input-sm am-fr" href="{{url_for('judge_state')}}?{{encode({'submitter':user.nickname})}}">我的提交</a>
     </div>
-    <hr />
     <div class="am-u-sm-12">
         <table class="am-table">
             <thead>
@@ -31,13 +30,13 @@
             <tbody>
             {% for judge in judges %}
                 {% set see_result=judge.is_allowed_see_result(user) %}
-                {% set result=judge.result_dict() %}
+                {% set result=judge.result_dict()%}
                 <tr>
                     <td>{{judge.id}}</td>
                     <td><a href="{{url_for('problem',problem_id=judge.problem.id)}}">{{judge.problem.title}}</a></td>
                     {% if see_result %}
                     
-                    <td>{{result["status"]}}</td>
+                    <td>{{judge.status}}</td>
 
                     {% if judge.is_allowed_see_code(user) %}
                     <td><a href="{{url_for('judge_detail',judge_id=judge.id)}}">{{result["score"]}}</a></td>
@@ -51,7 +50,7 @@
                     <td>隐藏</td>
                     <td>隐藏</td>
                     {% endif %}
-                    <td>{{judge.user.nickname}}</td>
+                    <td><a href="{{url_for('user',user_id=judge.user.id)}}">{{judge.user.nickname}}</a></td>
                     <td>{{judge.pretty_submit_time()}}</td>
                 </tr>
             {% endfor %}
@@ -59,7 +58,7 @@
         </table>
     </div>
     <hr />
-    <div class="am-u-12">
+    <div class="am-u-sm-12">
         <ul class="am-pagination am-pagination-centered">
             <li class="{% if not sorter.have_pre() %}am-disabled{% endif %} ">
                 <a href="{{url_for('judge_state')}}?{{encode(
