@@ -20,37 +20,37 @@ class File(db.Model):
         try:
             zip_file = zipfile.ZipFile(path)
         except:
-            return (False,"This file is not zip")
+            return (False, "This file is not zip")
 
         file_list = zip_file.namelist()
 
         if "data_rule.txt" not in file_list:
-            return (False,"Please include data_rule.txt in testdata pack")
+            return (False, "Please include data_rule.txt in testdata pack")
         data_rule = zip_file.read("data_rule.txt")
 
         lines = data_rule.split('\n')
         for i in range(0, len(lines)):
             lines[i] = lines[i].replace('\r', '').replace('\n', '')
 
-        if len(lines) <3 :
-            return (False,"data_rule.txt should include 3 lines")
+        if len(lines) < 3:
+            return (False, "data_rule.txt should include 3 lines")
 
-        data_no=lines[0].split()
-        input_name=lines[1]
-        output_name=lines[2]
+        data_no = lines[0].split()
+        input_name = lines[1]
+        output_name = lines[2]
 
-        ret=[]
+        ret = []
 
         for i in data_no:
-            i=int(i)
-            input_file=input_name.replace('#',str(i))
-            output_file=output_name.replace('#',str(i))
+            i = int(i)
+            input_file = input_name.replace('#', str(i))
+            output_file = output_name.replace('#', str(i))
             if input_file not in file_list:
-                return (False,"Do not find %s file" % input_file)
+                return (False, "Do not find %s file" % input_file)
             if output_file not in file_list:
-                return (False,"Do not find %s file" % output_file)
-            ret.append((input_file,output_file))
+                return (False, "Do not find %s file" % output_file)
+            ret.append((input_file, output_file))
 
         zip_file.close()
 
-        return (True,ret)
+        return (True, ret)

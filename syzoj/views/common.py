@@ -1,5 +1,5 @@
 from flask import redirect, url_for
-
+import time
 
 def show_error(error, next):
     return redirect(url_for("error", info=error, next=next))
@@ -11,6 +11,9 @@ def need_login():
 
 def not_have_permission():
     return show_error("You don't have permission", url_for("index"))
+
+def pretty_time(now):
+    return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(now))
 
 class Paginate():
     query=None

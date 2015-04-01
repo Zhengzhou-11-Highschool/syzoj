@@ -9,7 +9,7 @@ class JudgeState(db.Model):
     code = db.Column(db.Text)
     language = db.Column(db.String(20))
 
-    status=db.Column(db.String(50))
+    status = db.Column(db.String(50))
     result = db.Column(db.Text)
 
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), index=True)
@@ -25,7 +25,7 @@ class JudgeState(db.Model):
 
     def __init__(self, code, language, user, problem, contest=None, submit_time=None):
         if not submit_time:
-            submit_time=int(time.time())
+            submit_time = int(time.time())
         self.code = code
         self.language = language
         self.user = user
@@ -33,8 +33,8 @@ class JudgeState(db.Model):
         self.submit_time = submit_time
         self.contest = contest
 
-        self.status="Waiting"
-        self.result='{"status": "Waiting", "total_time": 0, "total_memory": 0, "score":0, "case": 0}'
+        self.status = "Waiting"
+        self.result = '{"status": "Waiting", "total_time": 0, "total_memory": 0, "score":0, "case": 0}'
 
     def __repr__(self):
         print "<JudgeState %r>" % self.id
@@ -43,16 +43,16 @@ class JudgeState(db.Model):
         db.session.add(self)
         db.session.commit()
 
-    def is_allowed_see_result(self,user):
+    def is_allowed_see_result(self, user):
         if self.problem.is_allowed_edit(user):
             return True
         if self.contest and self.contest.is_running():
             return False
         return self.problem.is_public
 
-    def is_allowed_see_code(self,user):
+    def is_allowed_see_code(self, user):
         if user:
-            if user.is_admin or self.user.id==user.id:
+            if user.is_admin or self.user.id == user.id:
                 return True
         return self.is_allowed_see_result(user)
 
@@ -61,7 +61,6 @@ class JudgeState(db.Model):
 
     def pretty_submit_time(self):
         return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(self.submit_time))
-
 
 
 class WaitingJudge(db.Model):

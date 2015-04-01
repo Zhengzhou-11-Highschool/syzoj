@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<style type="text/css">
+    .small{
+    font-size: 0.7em;
+    }
+</style>
+<div class="am-container am-g">
+	<div class="am-u-sm-12">
+ 		<h1>{{article.title}}</h1>
+ 		<p class="small"><img src="{{article.user.get_gravatar_url(16)}}">
+ 			<a href="{{url_for('user',user_id=article.user.id)}}">{{article.user.nickname}}</a>
+ 			{% if article.user.nameplate %}{{article.user.nameplate|safe}}{% endif %} 于{{pretty_time(article.public_time)}}发表,{{pretty_time(article.update_time)}}最后更新
+ 			 {% if article.is_allowed_edit(user) %}
+        	<a class="am-btn am-btn-success am-btn-sm am-fr" href="{{url_for('edit_article',article_id=article.id)}}">编辑文章</a>
+        	{% endif %}
+ 		</p>
+	</div>
+    <div class="am-u-sm-12">
+	    <div class="am-panel am-panel-default">
+	        <div class="am-panel-bd" id="content">{{article.content}}</div>
+	    </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+{% endblock %}

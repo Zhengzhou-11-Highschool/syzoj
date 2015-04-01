@@ -1,0 +1,7 @@
+flask==0.10.1
+flask-sqlalchemy==2.0
+itsdangerous==0.24
+jinja2==2.7.3
+markupsafe==0.23
+sqlalchemy==1.0.0b3
+werkzeug==0.10.1

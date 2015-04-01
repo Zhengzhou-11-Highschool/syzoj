@@ -15,7 +15,7 @@ class Session(db.Model):
 
     def __init__(self, user, login_time=None, valid_time=3600 * 24 * 7):
         if not login_time:
-            login_time=int(time.time())
+            login_time = int(time.time())
         self.id = str(randint(1, int(1e50)))
         self.user = user
         self.login_time = login_time
@@ -35,7 +35,7 @@ class Session(db.Model):
     def is_valid(self, now=None):
         # print "now:%r expiration_tim:%r" % (now,self.expiration_time)
         if not now:
-            now=int(time.time());
+            now = int(time.time());
         if now < self.expiration_time:
             return True
         else:
@@ -45,7 +45,7 @@ class Session(db.Model):
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True,index=True)
+    username = db.Column(db.String(80), unique=True, index=True)
     email = db.Column(db.String(120))
     password = db.Column(db.String(120))
 
@@ -58,9 +58,9 @@ class User(db.Model):
 
     is_admin = db.Column(db.Boolean)
 
-    def get_gravatar_url(self,size=40):
+    def get_gravatar_url(self, size=40):
         url = "http://cn.gravatar.com/avatar/" + hashlib.md5(self.email.lower()).hexdigest() + "?"
-        url += urllib.urlencode({'d':'mm','s':str(size)})
+        url += urllib.urlencode({'d': 'mm', 's': str(size)})
         return url
 
     def __init__(self, username, password, email):
@@ -70,8 +70,8 @@ class User(db.Model):
 
         self.nickname = username
         self.is_admin = False
-        self.ac_num=0
-        self.submit_num=0
+        self.ac_num = 0
+        self.submit_num = 0
 
     def __repr__(self):
         return "<User:%r password:%r email:%r>" % (self.username, self.password, self.email)
