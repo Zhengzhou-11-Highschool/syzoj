@@ -105,4 +105,4 @@ def judge_detail(judge_id):
     judge=get_judge_by_id(judge_id)
     if not judge:
         abort(404)
-    return render_template("judge_detail.html",judge=judge,user=get_user(),tostr=str)
+    return render_template("judge_detail.html",judge=judge,user=get_user(),tostr=str,tab="judge")

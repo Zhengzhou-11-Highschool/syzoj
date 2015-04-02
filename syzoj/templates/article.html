@@ -26,4 +26,14 @@
 {% endblock %}
 
 {% block script %}
+<script src="{{ url_for('static', filename='marked.js') }}"></script>
+<script type="text/javascript">
+function render(tag){
+    tag.html(marked(tag.html()));
+}
+marked.setOptions({
+  highlight: function (code) {
+    return "<code>"+code+"</code>";
+  }
+});
 {% endblock %}

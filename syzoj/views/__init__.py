@@ -5,7 +5,7 @@ from .session import sign_up, login
 from .problem import problem, problem_set
 from .judge import submit_code,judge_state
 from .user import user
-from .discusstion import edit_article
+from .discussion import edit_article,article,discussion
 
 
 @oj.route("/")

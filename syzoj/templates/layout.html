@@ -24,7 +24,7 @@
             width: 36px;
             height: 36px;
         }
-        textarea{
+        textarea,body{
             text-rendering: auto;
         }
     </style>
@@ -47,7 +47,7 @@
                     <li class="{% if tab=='judge' %}am-active {% endif %}"><a href="{{ url_for('judge_state') }}">评测</a></li>
                     <li class="{% if tab=='ranklist' %}am-active {% endif %}"><a href="{{url_for('ranklist')}}">排名</a></li>
                     <li><a href="#">比赛</a></li>
-                    <li><a href="#">讨论</a></li>
+                    <li class="{% if tab=='discussion'%}am-active{% endif %}"><a href="{{url_for('discussion')}}">讨论</a></li>
                 </ul>
             </div>
             {% if user %}

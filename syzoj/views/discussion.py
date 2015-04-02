@@ -4,13 +4,19 @@ from syzoj.models import User, Problem, get_problem_by_id, File, JudgeState,Wait
 from syzoj.views.common import need_login, not_have_permission, show_error,pretty_time
 import os
 
+
+@oj.route("/discussion")
+def discussion():
+    articles=Article.query.all()
+    return render_template("discussion.html",user=get_user(),articles=articles,pretty_time=pretty_time,tab="discussion")
+
 @oj.route("/article/<int:article_id>")
 def article(article_id):
     article=Article.query.filter_by(id=article_id).first()
     if not article:
         return show_error("Can't find article",url_for('index'))
     print article.title
-    return render_template("article.html",article=article,user=get_user(),pretty_time=pretty_time)
+    return render_template("article.html",article=article,user=get_user(),pretty_time=pretty_time,tab="discussion")
 
 @oj.route("/article/<int:article_id>/edit",methods=["GET", "POST"])
 def edit_article(article_id):
@@ -34,4 +40,4 @@ def edit_article(article_id):
         article.save()
         return redirect(url_for("article",article_id=article_id))
     else:
-        return render_template("edit_article.html",user=get_user(),article=article)
+        return render_template("edit_article.html",user=get_user(),article=article,tab="discussion")
