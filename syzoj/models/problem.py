@@ -65,8 +65,7 @@ class Problem(db.Model):
         if user:
             if self.user_id == user.id or user.is_admin:
                 return True
-        else:
-            return False
+        return False
 
     def is_allowed_use(self, user):
         if self.is_public:

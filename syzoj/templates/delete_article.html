@@ -1,0 +1,7 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class="am-container am-g">
+	<h1>你真的要删除文章 {{article.title}} 吗？该操作目前不可逆，请谨慎操作</h1>
+	<a href="{{url_for('delete_article',article_id=article.id)}}?confirm=true" class="am-btn am-btn-danger am-btn-sm">我知道我在干什么，删除</a>
+</div>
+{% endblock %}

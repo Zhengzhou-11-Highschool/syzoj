@@ -40,6 +40,10 @@ class Article(db.Model):
         db.session.add(self)
         db.session.commit()
 
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
     def is_allowed_edit(self, user=None):
         if not user:
             return False

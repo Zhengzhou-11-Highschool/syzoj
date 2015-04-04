@@ -1,5 +1,6 @@
 from syzoj import oj, db
 import zipfile, os
+import hashlib
 from random import randint
 import time
 
@@ -7,13 +8,29 @@ import time
 class File(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     filename = db.Column(db.String(120), unique=True, index=True)
+    file = None
 
-    def __init__(self, filename):
-        self.filename = filename
+    def __init__(self, file):
+        self.file = file
+
+        file.seek(0)
+        m = hashlib.md5()
+        while True:
+            data = file.read(8192)
+            if not data:
+                break
+            m.update(data)
+        self.filename = m.hexdigest()
 
     def save(self):
-        db.session.add(self)
-        db.session.commit()
+        existed = File.query.filter_by(filename=self.filename).first()
+        if existed:
+            self = existed
+        else:
+            self.file.seek(0)
+            self.file.save(os.path.join(oj.config['UPLOAD_FOLDER'], self.filename))
+            db.session.add(self)
+            db.session.commit()
 
     def parse_as_testdata(self):
         path = os.path.join(oj.config["UPLOAD_FOLDER"], self.filename)

@@ -46,6 +46,31 @@ def edit_article(article_id):
         article.title = request.form.get("title")
         article.content = request.form.get("content")
         article.save()
-        return redirect(url_for("article", article_id=article_id))
+        return redirect(url_for("article", article_id=article.id))
     else:
         return render_template("edit_article.html", user=get_user(), article=article, tab="discussion")
+
+
+@oj.route("/article/<int:article_id>/delete")
+def delete_article(article_id):
+    user = get_user()
+    article = Article.query.filter_by(id=article_id).first()
+
+    if not user:
+        return need_login()
+
+    if not article:
+        return show_error("Can't find article", url_for('index'))
+
+    if article and article.is_allowed_edit(user) == False:
+        return not_have_permission()
+
+    if request.args.get("confirm")=="true":
+        article = Article.query.filter_by(id=article_id).first()
+        if article and article.is_allowed_edit(user) == False:
+            return not_have_permission()
+
+        article.delete()
+        return redirect(url_for("discussion"))
+    else:
+        return render_template("delete_article.html",user=user,article=article)

@@ -76,8 +76,8 @@ def upload_testdata(problem_id):
     if request.method == "POST":
         file = request.files.get("testdata")
         if file:
-            testdata = File(str(randint(1, int(1e50))) + ".zip")
-            file.save(os.path.join(oj.config["UPLOAD_FOLDER"], testdata.filename))
+            testdata = File(file)
+            testdata.filename += ".zip"
             testdata.save()
             problem.testdata = testdata
         if request.form.get("time_limit"):

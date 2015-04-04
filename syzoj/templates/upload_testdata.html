@@ -3,7 +3,8 @@
 <div class="am-container am-g">
 	<div class="am-u-sm-6">
 		{% if problem.testdata %}
-		{% set ok,list=problem.testdata.parse_as_testdata() %}
+			<p>数据包:{{problem.testdata.filename}}</p>
+			{% set ok,list=problem.testdata.parse_as_testdata() %}
 			{% if ok %}
 				<h3>你已经上传了测试数据，并且已经解析出以下数据点</h3>
 				    <table class="am-table">

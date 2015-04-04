@@ -1,4 +1,5 @@
-from flask import redirect, url_for
+from flask import redirect, url_for, request, render_template
+from syzoj import oj
 import time
 
 
@@ -16,7 +17,6 @@ def not_have_permission():
 
 def pretty_time(now):
     return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(now))
-
 
 class Paginate():
     query = None
