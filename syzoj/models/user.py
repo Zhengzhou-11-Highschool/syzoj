@@ -79,3 +79,10 @@ class User(db.Model):
     def save(self):
         db.session.add(self)
         db.session.commit()
+
+    def is_allowed_edit(self, user):
+        if user:
+            if self.id == user.id or user.is_admin:
+                return True
+        else:
+            return False

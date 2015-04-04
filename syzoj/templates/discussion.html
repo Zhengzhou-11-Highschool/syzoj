@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% block body %}
-<div class="am-container">
+<div class="am-container am-g">
     <h1>讨论区</h1>
     <div class="am-u-sm-12">
         <table class="am-table">
@@ -22,5 +22,7 @@
             </tbody>
         </table>
     </div>
+    </hr>
+    {{sorter.get_html()|safe}}
 </div>
 {% endblock %}

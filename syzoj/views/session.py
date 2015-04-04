@@ -15,6 +15,8 @@ def sign_up():
 
 
 def is_valid_username(username):
+    if not username:
+        return False
     if len(username) < 3 or len(username) > 16:
         return False
     checker = re.compile("[A-Za-z0-9_]")
@@ -24,6 +26,8 @@ def is_valid_username(username):
 
 
 def is_valid_email(email):
+    if not email:
+        return False
     if len(email) < 3 or len(email) > 50:
         return False
     checker = re.compile("^.+\\@(\\[?)[a-zA-Z0-9\\-\\.]+\\.([a-zA-Z]{2,3}|[0-9]{1,3})(\\]?)$")
@@ -33,6 +37,8 @@ def is_valid_email(email):
 
 
 def is_valid_password(password):
+    if not password:
+        return None
     syzoj2_xxx = "59cb65ba6f9ad18de0dcd12d5ae11bd2"
     if len(password) != len(syzoj2_xxx):
         return False
@@ -73,8 +79,8 @@ def api_sign_up():
 def api_login():
     error_code = 1
     session_id = "???"
-    username = request.args.get('username')
-    password = request.args.get('password')
+    username = request.form.get('username')
+    password = request.form.get('password')
     user = get_user(username=username)
     if not user:
         error_code = 1001

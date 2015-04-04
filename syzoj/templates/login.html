@@ -46,12 +46,11 @@ function success(session_id){
 function login(){
     password=$.md5($("#password").val()+"syzoj2_xxx")
     $("#login").text("请稍等 ......");
-    url='/api/login?username='+$("#username").val()+'&password='+password;
-    url=encodeURI(url);
     //alert(url);
     $.ajax({
-        url : url,
+        url : "/api/login",
         type : 'POST',
+        data:{"username":$("#username").val(),"password":password},
         async:false,
         success : function(data) {
             error_code=data.error_code;

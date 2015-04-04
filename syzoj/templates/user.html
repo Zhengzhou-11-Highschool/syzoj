@@ -1,6 +1,7 @@
 {% extends "layout.html" %}
 {% block body %}
 <div class="am-container am-g">
+	<h1>用户信息</h1>
 	<div class="am-u-sm-8">
 		<div class="am-panel am-panel-default am-u-sm-6">
 		 	<div class="am-panel-hd">
@@ -30,7 +31,7 @@
 		   		<h3 class="am-panel-title">个性签名</h3>
 		 	</div>
 		 	<div class="am-panel-bd">
-				<p>{%if show_user.informatino%}{{show_user.information}}{%else%}泥萌看什么看，{{show_user.nickname}}什么都没有说{%endif%}</p>
+				<p>{%if show_user.information%}{{show_user.information}}{%else%}泥萌看什么看，{{show_user.nickname}}什么都没有说{%endif%}</p>
 			</div>
 		</div>
 	</div>

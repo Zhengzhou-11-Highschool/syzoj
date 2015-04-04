@@ -59,7 +59,7 @@
                         </a>
                         <ul class="am-dropdown-content">
                             <li><a href="{{url_for('user',user_id=user.id)}}"><span class="am-icon-user"></span> 资料</a></li>
-                            <li><a href="#"><span class="am-icon-cog"></span> 设置</a></li>
+                            <li><a href="{{url_for('edit_user',user_id=user.id)}}"><span class="am-icon-cog"></span> 设置</a></li>
                             <li><a href="#" id="logout"><span class="am-icon-power-off"></span> 注销</a></li>
                         </ul>
                     </li>

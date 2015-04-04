@@ -44,18 +44,37 @@
         {% endif %}
     </div>
     {% if see_code and see_result%}
+    <div class="am-u-sm-12">
+        <section class="am-accordion am-accordion-default">
         {% for i in range(1,result["case"]+1) %}
-        <div class="am-u-sm-12">
+        <dl class="am-accordion-item">
             {% set case=result[tostr(i)] %}
-            <h2>测试点:{{i}} 状态:{{case["status"]}} 运行时间:{{case["time_used"]}}ms 使用内存:{{case["memory_used"]}}kb</h2>
-            <strong>输入文件</strong>
-            <pre><code>{{case["input"]}}</code></pre>
-            <strong>期望输出</strong>
-            <pre><code>{{case["expect_output"]}}</code></pre>
-            <strong>你的输出</strong>
-            <pre><code>{{case["your_output"]}}</code></pre>
-        </div>
+            <dt class="am-accordion-title" onclick="toggle_dd(this)">测试点:{{i}} 状态:{{case["status"]}} 运行时间:{{case["time_used"]}}ms 使用内存:{{case["memory_used"]}}kb</dt>
+            <dd class="am-accordion-content am-collapse" onclick="$(this).toggle()">
+                <div class="am-accordion-content">
+                    <strong>输入文件</strong>
+                    <pre><code>{{case["input"]}}</code></pre>
+                    <strong>期望输出</strong>
+                    <pre><code>{{case["expect_output"]}}</code></pre>
+                    <strong>你的输出</strong>
+                    <pre><code>{{case["your_output"]}}</code></pre>
+                </div>
+            </dd>
+        </dl>
         {% endfor %}
+        </section>
+    </div>
     {% endif %}
 </div>
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+//Maybe the bug of Amaze or zishi of mine,the panel data can't been unfloded.
+//I only able to solve it by this way.
+function toggle_dd(dt){
+    dd=$(dt).next();
+    dd.toggle();
+}
+</script>
 {% endblock %}

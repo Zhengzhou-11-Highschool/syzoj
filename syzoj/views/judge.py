@@ -3,8 +3,6 @@ from syzoj import oj, db
 from syzoj.models import get_problem_by_id, JudgeState, WaitingJudge, get_judge_by_id, get_user, User
 from syzoj.views.common import need_login, not_have_permission, show_error, Paginate
 from urllib import urlencode
-from random import randint
-import os
 
 
 @oj.route("/submit/<int:problem_id>", methods=["GET", "POST"])
@@ -62,7 +60,7 @@ def judge_state():
                       cur_page=request.args.get("page"), edge_display_num=3, per_page=10)
 
     return render_template("judge_state.html", user=get_user(), judges=sorter.get(), tab="judge",
-                           submitter=nickname, problem_id=problem_id, sorter=sorter,encode=urlencode)
+                           submitter=nickname, problem_id=problem_id, sorter=sorter, encode=urlencode)
 
 
 @oj.route("/api/waiting_judge", methods=["GET"])

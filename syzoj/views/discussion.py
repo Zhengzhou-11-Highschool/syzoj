@@ -1,15 +1,20 @@
 from flask import Flask, jsonify, redirect, url_for, escape, abort, request, render_template
 from syzoj import oj
 from syzoj.models import User, Problem, get_problem_by_id, File, JudgeState, WaitingJudge, get_user, Article
-from syzoj.views.common import need_login, not_have_permission, show_error, pretty_time
-import os
+from syzoj.views.common import need_login, not_have_permission, show_error, pretty_time, Paginate
+from urllib import urlencode
 
 
 @oj.route("/discussion")
 def discussion():
-    articles = Article.query.all()
-    return render_template("discussion.html", user=get_user(), articles=articles, pretty_time=pretty_time,
-                           tab="discussion")
+    query = Article.query
+
+    def make_url(page, other):
+        return url_for("discussion") + "?" + urlencode({"page": page})
+
+    sorter = Paginate(query, make_url=make_url, cur_page=request.args.get("page"), edge_display_num=3, per_page=10)
+    return render_template("discussion.html", user=get_user(), articles=sorter.get(), pretty_time=pretty_time,
+                           tab="discussion", sorter=sorter)
 
 
 @oj.route("/article/<int:article_id>")

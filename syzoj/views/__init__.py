@@ -4,7 +4,7 @@ from syzoj.models import User, get_user
 from .session import sign_up, login
 from .problem import problem, problem_set
 from .judge import submit_code, judge_state
-from .user import user
+from .user import user, edit_user
 from .discussion import edit_article, article, discussion
 
 
