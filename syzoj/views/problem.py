@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, redirect, url_for, escape, abort, request, render_template
 from syzoj import oj
-from syzoj.models import User, Problem, get_problem_by_id, File, JudgeState,WaitingJudge, get_user
+from syzoj.models import User, Problem, get_problem_by_id, File, JudgeState, WaitingJudge, get_user
 from syzoj.views.common import need_login, not_have_permission, show_error
 from random import randint
 from urllib import urlencode
@@ -21,7 +21,7 @@ def problem(problem_id):
         abort(404)
     if problem.is_allowed_use(user) == False:
         return not_have_permission()
-    return render_template("problem.html", tab="problem_set", user=get_user(), problem=problem,encode=urlencode)
+    return render_template("problem.html", tab="problem_set", user=get_user(), problem=problem, encode=urlencode)
 
 
 @oj.route("/problem/<int:problem_id>/edit", methods=["GET", "POST"])
@@ -40,7 +40,7 @@ def edit_problem(problem_id):
                               url_for("edit_problem", problem_id=problem_id))
 
         if not problem:
-            problem = Problem(user=user,title=request.form.get("title"))
+            problem = Problem(user=user, title=request.form.get("title"))
 
         problem.title = request.form.get("title")
         problem.description = request.form.get("description")
@@ -73,15 +73,15 @@ def upload_testdata(problem_id):
             testdata = File(str(randint(1, int(1e50))) + ".zip")
             file.save(os.path.join(oj.config["UPLOAD_FOLDER"], testdata.filename))
             testdata.save()
-            problem.testdata =testdata
+            problem.testdata = testdata
         if request.form.get("time_limit"):
-            problem.time_limit=int(request.form.get("time_limit"))
+            problem.time_limit = int(request.form.get("time_limit"))
         if request.form.get("memory_limit"):
-            problem.memory_limit=int(request.form.get("memory_limit"))
+            problem.memory_limit = int(request.form.get("memory_limit"))
         problem.save()
         return redirect(url_for("upload_testdata", problem_id=problem_id))
     else:
-        return render_template("upload_testdata.html", problem=problem,user=user)
+        return render_template("upload_testdata.html", problem=problem, user=user)
 
 
 @oj.route("/api/problem/<int:problem_id>/public", methods=["POST", "DELETE"])
@@ -97,4 +97,4 @@ def change_public_attr(problem_id):
         problem.save()
     else:
         abort(404)
-    return jsonify({"status":0})
+    return jsonify({"status": 0})

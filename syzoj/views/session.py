@@ -1,7 +1,8 @@
 from flask import Flask, jsonify, redirect, url_for, escape, request, render_template
 from syzoj import oj
-from syzoj.models import User,Session,get_user
+from syzoj.models import User, Session, get_user
 import re
+
 
 @oj.route("/login")
 def login():

@@ -58,45 +58,6 @@
         </table>
     </div>
     <hr />
-    <div class="am-u-sm-12">
-        <ul class="am-pagination am-pagination-centered">
-            <li class="{% if not sorter.have_pre() %}am-disabled{% endif %} ">
-                <a href="{{url_for('judge_state')}}?{{encode(
-                {'submitter':submiter,
-                'problem_id':problem_id,
-                'page':sorter.cur_page-1}
-                )}}">
-                <span class="am-icon-angle-double-left"></span></a></li>
-
-            {% if sorter.need_omit_left()%}
-            <li><span>...</span></li>
-            {% endif %}
-
-            {% for id in sorter.range()%}
-            <li class="{% if id==sorter.cur_page %}am-active{% endif %}">
-            <a href="{{url_for('judge_state')}}?{{encode(
-                {'submitter':submiter,
-                'problem_id':problem_id,
-                'page':id}
-                )}}">{{id}}</a></li>
-            {% endfor %}
-
-            {% if sorter.need_omit_right()%}
-            <li><span>...</span></li>
-            <li><a href="{{url_for('judge_state')}}?{{encode(
-                {'submitter':submiter,
-                'problem_id':problem_id,
-                'page':sorter.total_page}
-                )}}">{{sorter.total_page}}</a></li>
-            {% endif %}
-
-            <li class="{% if not sorter.have_next() %}am-disabled{% endif %} ">
-                <a href="{{url_for('judge_state')}}?{{encode(
-                {'submitter':submiter,
-                'problem_id':problem_id,
-                'page':sorter.cur_page+1}
-                )}}"><span class="am-icon-angle-double-right"></span></a></li>
-        </ul>
-    </div>
+    {{sorter.get_html()|safe}}
 </div>
 {% endblock %}
