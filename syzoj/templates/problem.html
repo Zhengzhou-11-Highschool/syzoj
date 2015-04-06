@@ -69,6 +69,8 @@ $(document).ready(function(){
     render($("#output"));
     render($("#example"));
     render($("#hint"));
+    $("pre").addClass("prettyprint");
+    prettyPrint();
     //$("#description").html(marked($("#description").html()));
 });
 function public_problem(){

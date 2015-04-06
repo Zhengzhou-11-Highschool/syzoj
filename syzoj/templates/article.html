@@ -39,6 +39,8 @@ marked.setOptions({
 });
 $(document).ready(function(){
     render($("#content"));
+    $("pre").addClass("prettyprint");
+    prettyPrint();
 });
 </script>
 {% endblock %}

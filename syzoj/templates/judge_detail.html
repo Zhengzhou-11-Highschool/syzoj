@@ -50,7 +50,7 @@
         <dl class="am-accordion-item">
             {% set case=result[tostr(i)] %}
             <dt class="am-accordion-title" onclick="toggle_dd(this)">测试点:{{i}} 状态:{{case["status"]}} 运行时间:{{case["time_used"]}}ms 使用内存:{{case["memory_used"]}}kb</dt>
-            <dd class="am-accordion-content am-collapse" onclick="$(this).toggle()">
+            <dd class="am-accordion-content am-collapse">
                 <div class="am-accordion-content">
                     <strong>输入文件</strong>
                     <pre><code>{{case["input"]}}</code></pre>

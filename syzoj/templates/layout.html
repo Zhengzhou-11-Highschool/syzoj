@@ -84,6 +84,10 @@
 <script src="{{ url_for('static', filename='jquery.min.js') }}"></script>
 <script src="{{ url_for('static', filename='amazeui.min.js') }}"></script>
 <script src="{{ url_for('static', filename='jquery.ext.js') }}"></script>
+
+<script src="{{ url_for('static', filename='prettify.js') }}"></script>
+<link rel="stylesheet" href="{{url_for('static', filename='prettify.css') }}" type="text/css"/>
+
 <script type="text/javascript">
 function logout(){
     //alert($.cookie("session_id"));
@@ -95,12 +99,14 @@ function logout(){
         async:false,
     });
 }
+$("#logout").click(function(){
+    logout();
+    alert("我早已习惯你不在身边，\n人间四月天 寂寞断了弦。\n回望身后蓝天，\n跟再见说再见……\n  --《貂蝉》");
+    window.location.href="{{url_for('login')}}";
+});
 $(document).ready(function(){
-    $("#logout").click(function(){
-        logout();
-        alert("我早已习惯你不在身边，\n人间四月天 寂寞断了弦。\n回望身后蓝天，\n跟再见说再见……\n  --《貂蝉》");
-        window.location.href="{{url_for('login')}}";
-    });
+    $("pre").addClass("prettyprint");
+    prettyPrint();
 });
 </script>
 {% block script %}{% endblock %}
