@@ -35,7 +35,7 @@ class Session(db.Model):
     def is_valid(self, now=None):
         # print "now:%r expiration_tim:%r" % (now,self.expiration_time)
         if not now:
-            now = int(time.time());
+            now = int(time.time())
         if now < self.expiration_time:
             return True
         else:

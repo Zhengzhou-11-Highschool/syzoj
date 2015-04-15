@@ -24,7 +24,7 @@ class Problem(db.Model):
     time_limit = db.Column(db.Integer)
     memory_limit = db.Column(db.Integer)
 
-    testdata_id = db.Column(db.String(120), db.ForeignKey("file.id"), index=True)
+    testdata_id = db.Column(db.Interger, db.ForeignKey("file.id"))
     testdata = db.relationship("File", backref=db.backref('problems', lazy='dynamic'))
 
     tags = db.relationship('ProblemTag', secondary=tags_table,
