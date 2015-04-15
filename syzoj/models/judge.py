@@ -5,7 +5,7 @@ import time
 
 
 class JudgeState(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, index=True)
     code = db.Column(db.Text)
     language = db.Column(db.String(20))
 
@@ -64,7 +64,7 @@ class JudgeState(db.Model):
 
 
 class WaitingJudge(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, index=True)
     judge_id = db.Column(db.Integer, db.ForeignKey("judge_state.id"))
     judge = db.relationship("JudgeState", backref=db.backref("waiting_judge", lazy="dynamic"))
 

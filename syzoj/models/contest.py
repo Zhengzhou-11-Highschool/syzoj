@@ -13,7 +13,7 @@ players_table = db.Table('contest_players',
 
 
 class Contest(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, index=True)
     title = db.Column(db.String(80))
     start_time = db.Column(db.Integer)  # googbye at 2038-1-19
     end_time = db.Column(db.Integer)

@@ -2,9 +2,29 @@ from syzoj import db
 from random import randint
 import time
 
+tags_table = db.Table('article_tags',
+                      db.Column('tag_id', db.Integer, db.ForeignKey('article_tag.id'), index=True),
+                      db.Column('article_id', db.Integer, db.ForeignKey('article.id'), index=True)
+                      )
+
+
+class ArticleTag(db.Model):
+    id = db.Column(db.Integer, primary_key=True, index=True)
+    name = db.Column(db.String(80), index=True)
+
+    def __init__(self, name):
+        self.name = name
+
+    def __repr__(self):
+        return "<ArticleTag %r>" % self.name
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
 
 class Article(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, index=True)
     title = db.Column(db.String(80))
     content = db.Column(db.Text)
 
@@ -15,7 +35,8 @@ class Article(db.Model):
     update_time = db.Column(db.Integer)
     sort_time = db.Column(db.Integer, index=True)
 
-    tag = db.Column(db.Text, index=True)
+    tags = db.relationship('ArticleTag', secondary=tags_table,
+                           backref=db.backref('articles', lazy='dynamic'))
 
     comments_num = db.Column(db.Integer)
     allow_comment = db.Column(db.Boolean)

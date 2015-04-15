@@ -5,7 +5,7 @@ import time
 
 
 class Session(db.Model):
-    id = db.Column(db.String(120), primary_key=True)
+    id = db.Column(db.String(120), primary_key=True, index=True)
 
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), index=True)
     user = db.relationship("User", backref=db.backref("sessions", lazy='dynamic'))
@@ -44,7 +44,7 @@ class Session(db.Model):
 
 
 class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, index=True)
     username = db.Column(db.String(80), unique=True, index=True)
     email = db.Column(db.String(120))
     password = db.Column(db.String(120))

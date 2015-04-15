@@ -5,3 +5,4 @@ jinja2==2.7.3
 markupsafe==0.23
 sqlalchemy==1.0.0b3
 werkzeug==0.10.1
+mysql-python
