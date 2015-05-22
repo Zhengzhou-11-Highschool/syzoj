@@ -5,3 +5,4 @@ Scripts
 .idea
 test.db
 *.zip
+.settings

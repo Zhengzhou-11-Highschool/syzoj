@@ -1,17 +1,22 @@
-from flask import Flask, jsonify, redirect, url_for, escape, abort, request, render_template
-from syzoj import oj, db
-from syzoj.models import get_problem_by_id, JudgeState, WaitingJudge, get_judge_by_id, get_user, User
-from syzoj.views.common import need_login, not_have_permission, show_error, Paginate
 from urllib import urlencode
+import json
+
+from flask import jsonify, redirect, url_for, abort, request, render_template
+
+from syzoj import oj, db
+from syzoj.controller import Tools
+from syzoj.models import JudgeState, WaitingJudge, Problem, User
+from syzoj.controller import Paginate
+from .common import need_login, not_have_permission, show_error
 
 
 @oj.route("/submit/<int:problem_id>", methods=["GET", "POST"])
 def submit_code(problem_id):
-    user = get_user()
+    user = User.get_cur_user()
     if not user:
         return need_login()
 
-    problem = get_problem_by_id(problem_id)
+    problem = Problem.query.filter_by(id=problem_id).first()
     if not problem:
         abort(404)
 
@@ -59,8 +64,8 @@ def judge_state():
     sorter = Paginate(query, make_url=make_url, other={"submitter": nickname, "problem_id": problem_id},
                       cur_page=request.args.get("page"), edge_display_num=3, per_page=10)
 
-    return render_template("judge_state.html", user=get_user(), judges=sorter.get(), tab="judge",
-                           submitter=nickname, problem_id=problem_id, sorter=sorter, encode=urlencode)
+    return render_template("judge_state.html", user=User.get_cur_user(), judges=sorter.get(), tab="judge",
+                           submitter=nickname, problem_id=problem_id, sorter=sorter, encode=urlencode, tool=Tools)
 
 
 @oj.route("/api/waiting_judge", methods=["GET"])
@@ -86,31 +91,31 @@ def get_judge_info():
 
 @oj.route("/api/update_judge/<int:judge_id>", methods=["POST"])
 def update_judge_info(judge_id):
-    judge = get_judge_by_id(judge_id)
-    session_id = request.args.get('session_id')
-    if oj.config["JUDGE_TOKEN"] != session_id:
+    judge = JudgeState.query.filter_by(id=judge_id).first()
+    if not judge:
         abort(404)
 
+    token = request.args.get('session_id')
+    if oj.config["JUDGE_TOKEN"] != token:
+        abort(404)
+        # TODO:use error page replace abort(404)
+
     print request.form["result"]
-    judge.result = request.form["result"]
-    judge.status = judge.result_dict()["status"]
+    judge.update_result(json.dumps(request.form["result"]))
     judge.save()
 
     if judge.is_allowed_see_result(None):
-        print "allow_to_see"
         judge.problem.submit_num += 1
-        judge.user.submit_num += 1
-        if int(judge.result_dict()["score"]) == 100:
-            judge.user.ac_num += 1
-            judge.problem.ac_num += 1
-        judge.problem.save()
-        judge.user.save()
-    return jsonify({"status": 1})
+    judge.user.refresh_submit_info()
+    judge.user.save()
+
+    return jsonify({"return": 0})
 
 
 @oj.route("/judge_detail/<int:judge_id>")
 def judge_detail(judge_id):
-    judge = get_judge_by_id(judge_id)
+    judge = JudgeState.query.filter_by(id=judge_id).first()
     if not judge:
         abort(404)
-    return render_template("judge_detail.html", judge=judge, user=get_user(), tostr=str, tab="judge")
+
+    return render_template("judge_detail.html", judge=judge, user=User.get_cur_user(), tab="judge", tool=Tools)

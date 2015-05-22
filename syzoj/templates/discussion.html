@@ -13,11 +13,12 @@
             </tr>
             </thead>
             <tbody>
+            {% set articles = sorter.get() %}
             {% for article in articles %}
                 <tr>
                     <td><a href="{{url_for('article',article_id=article.id)}}">{{article.title}}</a></td>
                     <td><a href="{{url_for('user',user_id=article.user.id)}}">{{article.user.nickname}}</a></td>
-                    <td>{{pretty_time(article.public_time)}}</td>
+                    <td>{{tool.pretty_time(article.public_time)}}</td>
                 </tr>
             {% endfor %}
             </tbody>

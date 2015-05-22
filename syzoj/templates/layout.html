@@ -50,6 +50,7 @@
                     <li class="{% if tab=='discussion'%}am-active{% endif %}"><a href="{{url_for('discussion')}}">讨论</a></li>
                 </ul>
             </div>
+            {% set user=tool.get_cur_user() %}
             {% if user %}
             <div class="am-topbar-right">
                 <ul class="am-nav am-nav-pills am-topbar-nav">
@@ -110,5 +111,14 @@ $(document).ready(function(){
 });
 </script>
 {% block script %}{% endblock %}
+
+<footer data-am-widget="footer" class="am-footer am-footer-default">
+    <div class="am-footer-miscs ">
+       <p>CopyRight©2015 郑州市第十一中学.<a href="http://www.miibeian.gov.cn/" target="_blank">豫ICP备15011071号</a></p>
+    </div>
+    <div class="am-footer-miscs ">
+       <p>郑州十一中在线评测系统基于开源系统<a href="https://github.com/Chenyao2333/syzoj" target="_blank">SYZOJ</a>.</p>
+    </div>
+</footer>
 </body>
 </html>

@@ -19,7 +19,8 @@
 	        </tr>
 	        </thead>
 	        <tbody>
-	        {% set rank=sorter.per_page*(sorter.cur_page-1)+1%}
+	        {% set rank = sorter.per_page*(sorter.cur_page-1)+1%}
+            {% set users = sorter.get() %}
 	        {% for user in users%}
 		        <tr>
 		        	<td>{{rank}}</td> {%set rank=rank+1%}

@@ -1,6 +1,4 @@
 from syzoj import db
-from random import randint
-import time
 
 tags_table = db.Table('problem_tags',
                       db.Column('tag_id', db.Integer, db.ForeignKey('problem_tag.id'), index=True),
@@ -9,13 +7,13 @@ tags_table = db.Table('problem_tags',
 
 
 class Problem(db.Model):
-    id = db.Column(db.Integer, primary_key=True, index=True)
+    id = db.Column(db.Integer, primary_key=True)
 
     title = db.Column(db.String(80), index=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), index=True)
     user = db.relationship("User", backref=db.backref("upload_problems", lazy='dynamic'))
 
-    description = db.Column(db.Text, index=True)
+    description = db.Column(db.Text)
     input_format = db.Column(db.Text)
     output_format = db.Column(db.Text)
     example = db.Column(db.Text)
@@ -24,7 +22,7 @@ class Problem(db.Model):
     time_limit = db.Column(db.Integer)
     memory_limit = db.Column(db.Integer)
 
-    testdata_id = db.Column(db.Interger, db.ForeignKey("file.id"))
+    testdata_id = db.Column(db.Integer, db.ForeignKey("file.id"))
     testdata = db.relationship("File", backref=db.backref('problems', lazy='dynamic'))
 
     tags = db.relationship('ProblemTag', secondary=tags_table,
@@ -62,23 +60,29 @@ class Problem(db.Model):
         db.session.commit()
 
     def is_allowed_edit(self, user):
-        if user:
-            if self.user_id == user.id or user.is_admin:
-                return True
+        if not user:
+            return False
+        if self.user_id == user.id or user.is_admin:
+            return True
         return False
 
     def is_allowed_use(self, user):
         if self.is_public:
             return True
-        if user:
-            if self.user_id == user.id or user.is_admin:
-                return True
-                # if it belong a contest  and contest is running,also allow to use
+        if not user:
+            return False
+        if self.user_id == user.id or user.is_admin:
+            return True
+        # TODO:if it belong a contest  and contest is running,also allow to use
         return False
+
+    def set_is_public(self, public):
+        self.is_public = public
+        self.save()
 
 
 class ProblemTag(db.Model):
-    id = db.Column(db.Integer, primary_key=True, index=True)
+    id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), index=True)
 
     def __init__(self, name):

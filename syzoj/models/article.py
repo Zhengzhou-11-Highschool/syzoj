@@ -1,5 +1,4 @@
 from syzoj import db
-from random import randint
 import time
 
 tags_table = db.Table('article_tags',
@@ -9,7 +8,7 @@ tags_table = db.Table('article_tags',
 
 
 class ArticleTag(db.Model):
-    id = db.Column(db.Integer, primary_key=True, index=True)
+    id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), index=True)
 
     def __init__(self, name):
@@ -24,7 +23,7 @@ class ArticleTag(db.Model):
 
 
 class Article(db.Model):
-    id = db.Column(db.Integer, primary_key=True, index=True)
+    id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(80))
     content = db.Column(db.Text)
 

@@ -5,7 +5,7 @@
     text-align: center;
     }
     .am-panel-title{
-    font-size: 1.6em;
+    font-size: 1.3em;
     }
 </style>
 <div class="am-container am-g">
@@ -19,7 +19,7 @@
     </div>
     <div class="am-u-sm-12">
         <a class="am-btn am-btn-primary am-btn-sm am-fl" href="{{url_for('submit_code',problem_id=problem.id)}}">提交此题</a>
-        <a class="am-btn am-btn-danger am-btn-sm am-fl" href="{{url_for('judge_state')}}?{{encode({'problem_id':problem.id})}}">此题提交情况</a>
+        <a class="am-btn am-btn-danger am-btn-sm am-fl" href="{{url_for('judge_state')}}?{{tool.url_encode({'problem_id':problem.id})}}">此题提交情况</a>
         {% if problem.is_allowed_edit(user) %}
         <a class="am-btn am-btn-success am-btn-sm am-fl" href="{{url_for('edit_problem',problem_id=problem.id)}}">编辑题面</a>
         <a class="am-btn am-btn-secondary am-btn-sm am-fl" href="{{url_for('upload_testdata',problem_id=problem.id)}}">上传测试数据</a>
@@ -33,22 +33,24 @@
             {%endif %}
         {% endif %}
     </div>
-    <div class="am-panel am-panel-default am-u-sm-12">
-
-        <div class="am-panel-hd"><h3 class="am-panel-title">题目描述</h3></div>
-        <div class="am-panel-bd" id="description">{{problem.description}}</div>
-
-        <div class="am-panel-hd"><h3 class="am-panel-title">输入格式</h3></div>
-        <div class="am-panel-bd" id="input">{{problem.input_format}}</div>
-
-        <div class="am-panel-hd"><h3 class="am-panel-title">输出格式</h3></div>
-        <div class="am-panel-bd" id="output">{{problem.output_format}}</div>
-
-        <div class="am-panel-hd"><h3 class="am-panel-title">测试样例</h3></div>
-        <div class="am-panel-bd" id="example">{{problem.example}}</div>
-
-        <div class="am-panel-hd"><h3 class="am-panel-title">数据范围与提示</h3></div>
-        <div class="am-panel-bd" id="hint">{{problem.limit_and_hint}}</div>
+    <div class="am-u-sm-12">
+        <div class="am-panel am-panel-default">
+    
+            <div class="am-panel-hd"><h3 class="am-panel-title">题目描述</h3></div>
+            <div class="am-panel-bd" id="description">{{problem.description}}</div>
+    
+            <div class="am-panel-hd"><h3 class="am-panel-title">输入格式</h3></div>
+            <div class="am-panel-bd" id="input">{{problem.input_format}}</div>
+    
+            <div class="am-panel-hd"><h3 class="am-panel-title">输出格式</h3></div>
+            <div class="am-panel-bd" id="output">{{problem.output_format}}</div>
+    
+            <div class="am-panel-hd"><h3 class="am-panel-title">测试样例</h3></div>
+            <div class="am-panel-bd" id="example">{{problem.example}}</div>
+    
+            <div class="am-panel-hd"><h3 class="am-panel-title">数据范围与提示</h3></div>
+            <div class="am-panel-bd" id="hint">{{problem.limit_and_hint}}</div>
+        </div>
     </div>
 </div>
 {% endblock %}

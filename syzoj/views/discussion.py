@@ -1,8 +1,11 @@
-from flask import Flask, jsonify, redirect, url_for, escape, abort, request, render_template
-from syzoj import oj
-from syzoj.models import User, Problem, get_problem_by_id, File, JudgeState, WaitingJudge, get_user, Article
-from syzoj.views.common import need_login, not_have_permission, show_error, pretty_time, Paginate
 from urllib import urlencode
+
+from flask import redirect, url_for, request, render_template
+
+from syzoj import oj
+from syzoj.models import User, Article
+from syzoj.controller import Paginate, Tools
+from .common import need_login, not_have_permission, show_error
 
 
 @oj.route("/discussion")
@@ -13,8 +16,7 @@ def discussion():
         return url_for("discussion") + "?" + urlencode({"page": page})
 
     sorter = Paginate(query, make_url=make_url, cur_page=request.args.get("page"), edge_display_num=3, per_page=10)
-    return render_template("discussion.html", user=get_user(), articles=sorter.get(), pretty_time=pretty_time,
-                           tab="discussion", sorter=sorter)
+    return render_template("discussion.html", tool=Tools, tab="discussion", sorter=sorter)
 
 
 @oj.route("/article/<int:article_id>")
@@ -22,13 +24,13 @@ def article(article_id):
     article = Article.query.filter_by(id=article_id).first()
     if not article:
         return show_error("Can't find article", url_for('index'))
-    print article.title
-    return render_template("article.html", article=article, user=get_user(), pretty_time=pretty_time, tab="discussion")
+
+    return render_template("article.html", tool=Tools, article=article, tab="discussion")
 
 
 @oj.route("/article/<int:article_id>/edit", methods=["GET", "POST"])
 def edit_article(article_id):
-    user = get_user()
+    user = User.get_cur_user()
     if not user:
         return need_login()
 
@@ -48,12 +50,12 @@ def edit_article(article_id):
         article.save()
         return redirect(url_for("article", article_id=article.id))
     else:
-        return render_template("edit_article.html", user=get_user(), article=article, tab="discussion")
+        return render_template("edit_article.html", user=User.get_cur_user(), article=article, tab="discussion")
 
 
 @oj.route("/article/<int:article_id>/delete")
 def delete_article(article_id):
-    user = get_user()
+    user = User.get_cur_user()
     article = Article.query.filter_by(id=article_id).first()
 
     if not user:
@@ -65,7 +67,7 @@ def delete_article(article_id):
     if article and article.is_allowed_edit(user) == False:
         return not_have_permission()
 
-    if request.args.get("confirm")=="true":
+    if request.args.get("confirm") == "true":
         article = Article.query.filter_by(id=article_id).first()
         if article and article.is_allowed_edit(user) == False:
             return not_have_permission()
@@ -73,4 +75,4 @@ def delete_article(article_id):
         article.delete()
         return redirect(url_for("discussion"))
     else:
-        return render_template("delete_article.html",user=user,article=article)
+        return render_template("delete_article.html", user=user, article=article)

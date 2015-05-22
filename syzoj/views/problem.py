@@ -1,11 +1,11 @@
-from flask import Flask, jsonify, redirect, url_for, escape, abort, request, render_template
-from syzoj import oj
-from syzoj.models import User, Problem, get_problem_by_id, File, JudgeState, WaitingJudge, get_user
-from syzoj.views.common import need_login, not_have_permission, show_error, Paginate
-from random import randint
 from urllib import urlencode
-import os
 
+from flask import jsonify, redirect, url_for, abort, request, render_template
+
+from syzoj import oj
+from syzoj.models import User, Problem, File
+from syzoj.controller import Paginate, Tools
+from .common import need_login, not_have_permission, show_error
 
 @oj.route("/problem")
 def problem_set():
@@ -15,31 +15,33 @@ def problem_set():
         return url_for("problem_set") + "?" + urlencode({"page": page})
 
     sorter = Paginate(query, make_url=make_url, cur_page=request.args.get("page"), edge_display_num=50, per_page=50)
-    return render_template("problem_set.html", tab="problem_set", user=get_user(),
-                           problems=sorter.get(), sorter=sorter)
+    return render_template("problem_set.html", tool=Tools, tab="problem_set", sorter=sorter)
 
 
 @oj.route("/problem/<int:problem_id>")
 def problem(problem_id):
-    user = get_user()
-    problem = get_problem_by_id(problem_id)
+    user = User.get_cur_user()
+
+    problem = Problem.query.filter_by(id=problem_id).first()
     if not problem:
         abort(404)
+
     if problem.is_allowed_use(user) == False:
         return not_have_permission()
-    return render_template("problem.html", tab="problem_set", user=get_user(), problem=problem, encode=urlencode)
+
+    return render_template("problem.html", tool=Tools, tab="problem_set", problem=problem)
 
 
 @oj.route("/problem/<int:problem_id>/edit", methods=["GET", "POST"])
 def edit_problem(problem_id):
-    user = get_user()
+    user = User.get_cur_user()
     if not user:
         return need_login()
 
-    problem = get_problem_by_id(problem_id)
+    problem = Problem.query.filter_by(id=problem_id).first()
     if problem and problem.is_allowed_edit(user) == False:
         return not_have_permission()
-    print request.method
+
     if request.method == "POST":
         if request.form.get("title") == "" or request.form.get("description") == "":
             return show_error("Please input title and problem description",
@@ -59,22 +61,23 @@ def edit_problem(problem_id):
 
         return redirect(url_for("problem", problem_id=problem.id))
     else:
-        return render_template("edit_problem.html", problem=problem, user=user)
+        return render_template("edit_problem.html", tool=Tools, problem=problem)
 
 
 @oj.route("/problem/<int:problem_id>/upload", methods=["GET", "POST"])
 def upload_testdata(problem_id):
-    user = get_user()
+    user = User.get_cur_user()
     if not user:
         return need_login()
 
-    problem = get_problem_by_id(problem_id)
+    problem = Problem.query.filter_by(problem_id=problem_id).first()
     if not problem:
         abort(404)
     if problem.is_allowed_edit(user) == False:
         return not_have_permission()
     if request.method == "POST":
         file = request.files.get("testdata")
+        # Todo:suit new File'interface
         if file:
             testdata = File(file)
             testdata.filename += ".zip"
@@ -85,16 +88,17 @@ def upload_testdata(problem_id):
         if request.form.get("memory_limit"):
             problem.memory_limit = int(request.form.get("memory_limit"))
         problem.save()
-        return redirect(url_for("upload_testdata", problem_id=problem_id))
+        return redirect(url_for("upload_testdata", tool=Tools, problem_id=problem_id))
     else:
         return render_template("upload_testdata.html", problem=problem, user=user)
 
 
+# TODO:Maybe need add the metho of toggle is_public attr to Problem
 @oj.route("/api/problem/<int:problem_id>/public", methods=["POST", "DELETE"])
 def change_public_attr(problem_id):
     session_id = request.args.get('session_id')
-    user = get_user(session_id=session_id)
-    problem = get_problem_by_id(problem_id)
+    user = User.get_cur_user(session_id=session_id)
+    problem = Problem.query.filter_by(id=problem_id).first()
     if problem and user and user.is_admin:
         if request.method == "POST":
             problem.is_public = True

@@ -1,8 +1,73 @@
 {% extends "layout.html" %}
 {% block body %}
-<div class="am-container">
-    <h1>Hello World!</h1>
-
-    <p>这是一个测试页面</p>
+<div class="am-container am-g">
+	<div class="am-u-sm-8">
+		<div class="am-panel am-panel-default">
+		 	<div class="am-panel-hd">
+		   		<h3 class="am-panel-title">公告板</h3>
+		 	</div>
+		 	<div class="am-panel-bd">
+				<table class="am-table">
+		            <thead>
+		            <tr>
+		                <th>标题</th>
+		                <th>时间</th>
+		            </tr>
+		            </thead>
+		            <tbody>
+		                <tr>
+		                    <td><a href="article/1">测试</a></td>
+		                    <td>2015-5-15</td>
+		                </tr>
+		            </tbody>
+		        </table>
+			</div>
+		</div>
+		<div class="am-panel am-panel-default">
+		 	<div class="am-panel-hd">
+		   		<h3 class="am-panel-title">排名</h3>
+		 	</div>
+		 	<div class="am-panel-bd">
+			    <table class="am-table">
+			        <thead>
+			        <tr>
+			            <th>#</th>
+			            <th>昵称</th>
+			            <th>个性签名</th>
+			        </tr>
+			        </thead>
+			        <tbody>
+			        {% set rank = 1 %}
+		            {% set users = ranker.get() %}
+			        {% for user in users%}
+				        <tr>
+				        	<td>{{rank}}</td> {%set rank=rank+1%}
+				        	<td><a href="{{url_for('user',user_id=user.id)}}">{{user.nickname}}</a>{% if user.nameplate %}{{user.nameplate|safe}}{% endif %}</td>
+				        	<td>{% if user.information%}{{user.information}}{%endif%}</td>
+				        </tr>
+				     {% endfor %}
+			        </tbody>
+			    </table>
+			</div>
+		</div>
+    </div>
+	<div class="am-u-sm-4">
+		<div class="am-panel am-panel-default">
+		 	<div class="am-panel-hd">
+		   		<h3 class="am-panel-title">信息栏</h3>
+		 	</div>
+		 	<div class="am-panel-bd">
+				<p>再有不足50天就到noi了>_<...</p>
+			</div>
+		</div>
+		<div class="am-panel am-panel-default">
+		 	<div class="am-panel-hd">
+		   		<h3 class="am-panel-title">近期比赛</h3>
+		 	</div>
+		 	<div class="am-panel-bd">
+				<p>比赛功能正在开发中，敬请期待</p>
+			</div>
+		</div>
+	</div>
 </div>
 {% endblock %}

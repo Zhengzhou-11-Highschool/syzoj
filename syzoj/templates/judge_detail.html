@@ -16,7 +16,7 @@
             </thead>
             <tbody>
                 {% set see_result=judge.is_allowed_see_result(user) %}
-                {% set result=judge.result_dict() %}
+                {% set result=judge.get_result()%}
                 <tr>
                     <td>{{judge.id}}</td>
                     <td><a href="{{url_for('problem',problem_id=judge.problem.id)}}">{{judge.problem.title}}</a></td>
@@ -30,7 +30,7 @@
                     <td>隐藏</td>
                     {% endif %}
                     <td>{{judge.user.nickname}}</td>
-                    <td>{{judge.pretty_submit_time()}}</td>
+                    <td>{{tool.pretty_time(judge.submit_time)}}</td>
                 </tr>
             </tbody>
         </table>

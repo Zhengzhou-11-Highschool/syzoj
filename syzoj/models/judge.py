@@ -1,15 +1,15 @@
 from syzoj import db
-from random import randint
 import json
 import time
 
 
 class JudgeState(db.Model):
-    id = db.Column(db.Integer, primary_key=True, index=True)
+    id = db.Column(db.Integer, primary_key=True)
     code = db.Column(db.Text)
     language = db.Column(db.String(20))
 
-    status = db.Column(db.String(50))
+    status = db.Column(db.String(50), index=True)
+    score = db.Column(db.Integer, index=True)
     result = db.Column(db.Text)
 
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), index=True)
@@ -33,6 +33,7 @@ class JudgeState(db.Model):
         self.submit_time = submit_time
         self.contest = contest
 
+        self.score = 0
         self.status = "Waiting"
         self.result = '{"status": "Waiting", "total_time": 0, "total_memory": 0, "score":0, "case": 0}'
 
@@ -56,15 +57,17 @@ class JudgeState(db.Model):
                 return True
         return self.is_allowed_see_result(user)
 
-    def result_dict(self):
+    def get_result(self):
         return json.loads(self.result)
 
-    def pretty_submit_time(self):
-        return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(self.submit_time))
+    def update_result(self, result):
+        self.score = result["score"]
+        self.status = result["status"]
+        self.result = json.dumps(result)
 
 
 class WaitingJudge(db.Model):
-    id = db.Column(db.Integer, primary_key=True, index=True)
+    id = db.Column(db.Integer, primary_key=True)
     judge_id = db.Column(db.Integer, db.ForeignKey("judge_state.id"))
     judge = db.relationship("JudgeState", backref=db.backref("waiting_judge", lazy="dynamic"))
 

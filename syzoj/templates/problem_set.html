@@ -13,6 +13,7 @@
             </tr>
             </thead>
             <tbody>
+            {% set problems = sorter.get() %}
             {% for problem in problems %}
                 {% if problem.is_public or problem.is_allowed_edit(user)%}
                 <tr>
