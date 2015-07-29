@@ -3,7 +3,7 @@ from flask import jsonify, request, render_template
 from syzoj import oj
 from syzoj.models import User, Session
 from syzoj.controller import Tools
-
+from syzoj import controller
 
 @oj.route("/login")
 def login():
@@ -12,7 +12,7 @@ def login():
 
 @oj.route("/sign_up")
 def sign_up():
-    return render_template("sign_up.html", user=User.get_cur_user())
+    return render_template("sign_up.html", tool=Tools)
 
 
 @oj.route("/api/sign_up", methods=["POST"])
@@ -20,14 +20,7 @@ def api_sign_up():
     username = request.args.get('username')
     password = request.args.get('password')
     email = request.args.get('email')
-    if User.query.filter_by(username=username).first():
-        error_code = 2008
-    else:
-        user = User(username=username, password=password, email=email)
-        error_code = check_is_valid_user(user)
-        if error_code == 1:
-            user.save()
-            print user
+    error_code = controller.register(username, password, email)
     return jsonify({"error_code": error_code})
 
 

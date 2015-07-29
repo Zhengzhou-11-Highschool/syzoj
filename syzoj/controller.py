@@ -55,16 +55,14 @@ class Checker(object):
         if not password:
             return None
 
-        if len(password) != len(syzoj2_xxx):
-            return False
-
-        #Because of the salt is "syzoj2_xxx" and the "syzoj2_xxx" 's md5 is"59cb..."
-        #the empty password 's md5 will equal "59cb.."
+        # Because of the salt is "syzoj2_xxx" and the "syzoj2_xxx" 's md5 is"59cb..."
+        # the empty password 's md5 will equal "59cb.."
         syzoj2_xxx_md5 = "59cb65ba6f9ad18de0dcd12d5ae11bd2"
         if password == syzoj2_xxx_md5:
             return False
 
         return True
+
 
 class Paginate():
     query = None
@@ -89,27 +87,22 @@ class Paginate():
         if total % per_page:
             self.total_page += 1
 
-
     def have_pre(self, cur_page=None):
         if not cur_page:
             cur_page = self.cur_page
         print cur_page > 1
         return cur_page > 1
 
-
     def have_next(self, cur_page=None):
         if not cur_page:
             cur_page = self.cur_page
         return cur_page < self.total_page
 
-
     def need_omit_left(self):
         return self.cur_page - self.edge_display_num > 1
 
-
     def need_omit_right(self):
         return self.cur_page + self.edge_display_num < self.total_page
-
 
     def range(self):
         start = self.cur_page - self.edge_display_num
@@ -120,10 +113,8 @@ class Paginate():
             stop = self.total_page + 1
         return range(start, stop)
 
-
     def get(self):
         return self.query.offset((self.cur_page - 1) * self.per_page).limit(self.per_page)
-
 
     def get_html(self):
         pre_disable = ""
@@ -153,7 +144,7 @@ class Paginate():
             if pid == self.cur_page:
                 active = "am-active"
             pid_list += '''<li class="''' + active + '''"><a href="''' + \
-                        self.make_url(pid,self.other) + '''">''' + str(pid) + '''</a></li>'''
+                        self.make_url(pid, self.other) + '''">''' + str(pid) + '''</a></li>'''
 
         html = '''<div class="am-u-sm-12">
         <ul class="am-pagination am-pagination-centered">
@@ -167,3 +158,20 @@ class Paginate():
         </ul>
     </div>'''
         return html
+
+
+def register(username, password, email):
+    state_code = 0
+    if not Checker.is_valid_username(username):
+        state_code = 2002
+    elif not Checker.is_valid_password(password):
+        state_code = 2007
+    elif not Checker.is_valid_password(email):
+        state_code = 2006
+    elif User.query.filter_by(username=username).first():
+        state_code = 2008
+    else:
+        state_code = 1
+        user = User(username=username, password=password, email=email)
+        user.save()
+    return state_code

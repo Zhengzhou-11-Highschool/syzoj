@@ -50,7 +50,7 @@ def edit_article(article_id):
         article.save()
         return redirect(url_for("article", article_id=article.id))
     else:
-        return render_template("edit_article.html", user=User.get_cur_user(), article=article, tab="discussion")
+        return render_template("edit_article.html", tool=Tools, article=article, tab="discussion")
 
 
 @oj.route("/article/<int:article_id>/delete")
