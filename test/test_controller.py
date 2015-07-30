@@ -21,7 +21,7 @@ class TestRegister(unittest.TestCase):
 
     def test_multiple_register(self):
         rid = randint(1, 10000)
-        for i in range(1, 100):
+        for i in range(1, 2):
             pw = self.md5_pass("123_%d_%d" % (rid, i))
             print i, pw
             self.assertEqual(syzoj.controller.register("hello_%d_%d" % (rid, i), pw, "%d@qq.com" % i), 1)

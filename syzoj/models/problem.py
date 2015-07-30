@@ -1,4 +1,5 @@
 from syzoj import db
+from syzoj.models.file import File
 
 tags_table = db.Table('problem_tags',
                       db.Column('tag_id', db.Integer, db.ForeignKey('problem_tag.id'), index=True),
@@ -58,6 +59,29 @@ class Problem(db.Model):
     def save(self):
         db.session.add(self)
         db.session.commit()
+
+    def update(self, title=None, description=None, input_format=None, output_format=None, limit_and_hint=None):
+        if title != None:
+            self.title = title
+        if description != None:
+            self.description = description
+        if input_format != None:
+            self.input_format = input_format
+        if output_format != None:
+            self.output_format = output_format
+        if limit_and_hint != None:
+            self.limit_and_hint = limit_and_hint
+
+    def update_testdata(self, file):
+        td_name = "testdata_%d" % self.id
+        td = File.query.filter_by(filename=td_name).first()
+        if not td:
+            td = File(file)
+        td.file = file
+        td.filename = td_name
+        td.save_file()
+        td.save()
+        self.testdata = td
 
     def is_allowed_edit(self, user):
         if not user:

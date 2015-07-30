@@ -35,7 +35,7 @@ def submit_code(problem_id):
         waiting.save()
         return redirect(url_for("judge_detail", judge_id=judge.id))
     else:
-        return render_template("submit.html", problem=problem, user=user, tab="judge")
+        return render_template("submit.html", tool=Tools, problem=problem, tab="judge")
 
 
 @oj.route("/judge_state")

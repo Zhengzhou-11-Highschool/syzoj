@@ -2,10 +2,11 @@ from urllib import urlencode
 
 from flask import jsonify, redirect, url_for, abort, request, render_template
 
-from syzoj import oj
-from syzoj.models import User, Problem, File
+from syzoj import oj, controller
+from syzoj.models import User, Problem, File, FileParser
 from syzoj.controller import Paginate, Tools
 from .common import need_login, not_have_permission, show_error
+
 
 @oj.route("/problem")
 def problem_set():
@@ -43,19 +44,16 @@ def edit_problem(problem_id):
         return not_have_permission()
 
     if request.method == "POST":
-        if request.form.get("title") == "" or request.form.get("description") == "":
-            return show_error("Please input title and problem description",
-                              url_for("edit_problem", problem_id=problem_id))
-
         if not problem:
-            problem = Problem(user=user, title=request.form.get("title"))
+            problem_id = controller.create_problem(user=user, title=request.form.get("title"))
+            problem = Problem.query.filter_by(id=problem_id)
 
-        problem.title = request.form.get("title")
-        problem.description = request.form.get("description")
-        problem.input_format = request.form.get("input_format")
-        problem.output_format = request.form.get("output_format")
-        problem.example = request.form.get("example")
-        problem.limit_and_hint = request.form.get("limit_and_hint")
+        problem.update(title=request.form.get("title"),
+                       description=request.form.get("description"),
+                       input_format=request.form.get("input_format"),
+                       output_format=request.form.get("output_format"),
+                       example=request.form.get("example"),
+                       limit_and_hint=request.form.get("limit_and_hint"))
 
         problem.save()
 
@@ -70,19 +68,15 @@ def upload_testdata(problem_id):
     if not user:
         return need_login()
 
-    problem = Problem.query.filter_by(problem_id=problem_id).first()
+    problem = Problem.query.filter_by(id=problem_id).first()
     if not problem:
         abort(404)
     if problem.is_allowed_edit(user) == False:
         return not_have_permission()
     if request.method == "POST":
         file = request.files.get("testdata")
-        # Todo:suit new File'interface
         if file:
-            testdata = File(file)
-            testdata.filename += ".zip"
-            testdata.save()
-            problem.testdata = testdata
+            problem.update_testdata(file)
         if request.form.get("time_limit"):
             problem.time_limit = int(request.form.get("time_limit"))
         if request.form.get("memory_limit"):
@@ -90,7 +84,7 @@ def upload_testdata(problem_id):
         problem.save()
         return redirect(url_for("upload_testdata", tool=Tools, problem_id=problem_id))
     else:
-        return render_template("upload_testdata.html", problem=problem, user=user)
+        return render_template("upload_testdata.html", tool=Tools, problem=problem, parse=FileParser.parse_as_testdata)
 
 
 # TODO:Maybe need add the metho of toggle is_public attr to Problem

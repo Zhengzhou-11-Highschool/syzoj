@@ -8,10 +8,16 @@ class File(db.Model):
     filename = db.Column(db.String(120), unique=True, index=True)
     md5 = db.Column(db.String(50), index=True)
 
-    def __init__(self, filename, file):
+    def __init__(self, file):
         self.file = file
 
-        file.seek(0)
+    def calc_md5(self):
+        if self.md5:
+            return self.md5
+
+        if not self.file:
+            self.file = open(self.get_file_path())
+        self.file.seek(0)
         m = hashlib.md5()
         while True:
             data = file.read(8192)
@@ -20,26 +26,24 @@ class File(db.Model):
             m.update(data)
 
         self.md5 = m.hexdigest()
-        self.filename = filename
+        return self.md5
 
-    def _save_file(self):
+    def save_file(self):
         self.file.seek(0)
-        self.file.save(os.path.join(oj.config['UPLOAD_FOLDER'], self.md5))
+        self.file.save(os.path.join(oj.config['UPLOAD_FOLDER'], self.filename))
 
     def get_file_path(self):
-        return os.path.join(oj.config["UPLOAD_FOLDER"], self.md5)
+        return os.path.join(oj.config["UPLOAD_FOLDER"], self.filename)
 
     def save(self):
-
-        self._save_file()
-
         db.session.add(self)
         db.session.commit()
 
 
 class FileParser(object):
-    def parse_as_testdata(self, filename):
-
+    @staticmethod
+    def parse_as_testdata(file):
+        filename = file.get_file_path()
         if not zipfile.is_zipfile(filename):
             return (False, "This file isn\'t zipfile")
 

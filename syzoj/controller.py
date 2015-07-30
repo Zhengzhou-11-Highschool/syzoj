@@ -1,4 +1,4 @@
-from syzoj.models import User
+from syzoj.models import User, Problem
 from urllib import urlencode
 import time, re
 
@@ -175,3 +175,20 @@ def register(username, password, email):
         user = User(username=username, password=password, email=email)
         user.save()
     return state_code
+
+
+def create_problem(user, title):
+    problem = Problem(user=user, title=title)
+    problem.save()
+    print problem
+    return problem.id
+
+
+def become_admin(user):
+    user.is_admin = True
+    user.save()
+
+
+def cancel_admin(user):
+    user.is_admin = False
+    user.save()
