@@ -5,4 +5,4 @@ oj = Flask(__name__)
 oj.config.from_object("config")
 db = SQLAlchemy(oj)
 
-import views, models
+import views, models, controller
