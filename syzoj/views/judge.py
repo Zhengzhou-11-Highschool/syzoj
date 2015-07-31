@@ -91,23 +91,17 @@ def get_judge_info():
 
 @oj.route("/api/update_judge/<int:judge_id>", methods=["POST"])
 def update_judge_info(judge_id):
+    token = request.args.get('session_id')
+    if oj.config["JUDGE_TOKEN"] != token:
+        abort(404)
+
     judge = JudgeState.query.filter_by(id=judge_id).first()
     if not judge:
         abort(404)
 
-    token = request.args.get('session_id')
-    if oj.config["JUDGE_TOKEN"] != token:
-        abort(404)
-        # TODO:use error page replace abort(404)
-
-    print request.form["result"]
     judge.update_result(json.dumps(request.form["result"]))
+    judge.update_related_info()
     judge.save()
-
-    if judge.is_allowed_see_result(None):
-        judge.problem.submit_num += 1
-    judge.user.refresh_submit_info()
-    judge.user.save()
 
     return jsonify({"return": 0})
 

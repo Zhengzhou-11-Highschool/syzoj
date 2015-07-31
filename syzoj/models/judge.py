@@ -1,4 +1,5 @@
 from syzoj import db
+from syzoj.models.contest import Contest
 import json
 import time
 
@@ -18,12 +19,16 @@ class JudgeState(db.Model):
     problem_id = db.Column(db.Integer, db.ForeignKey("problem.id"), index=True)
     problem = db.relationship("Problem", backref=db.backref("submit", lazy='dynamic'))
 
-    contest_id = db.Column(db.Integer, db.ForeignKey("contest.id"), index=True)
-    contest = db.relationship("Contest", backref=db.backref("judges", lazy='dynamic'))
-
     submit_time = db.Column(db.Integer)  # googbye at 2038-1-19
 
-    def __init__(self, code, language, user, problem, contest=None, submit_time=None):
+    # "type" indicate it's contest's submission(type = 0) or normal submission(type = 1)
+    # type=2: this is a test submission
+    # if it's contest's submission (type = 1), the type_info is contest_id
+    # use this way represent because it's easy to expand
+    type = db.Column(db.Integer)
+    type_info = db.Column(db.Integer)
+
+    def __init__(self, code, language, user, problem, type=0, type_info=None, submit_time=None):
         if not submit_time:
             submit_time = int(time.time())
         self.code = code
@@ -31,7 +36,9 @@ class JudgeState(db.Model):
         self.user = user
         self.problem = problem
         self.submit_time = submit_time
-        self.contest = contest
+
+        self.type = type
+        self.type_info = type_info
 
         self.score = 0
         self.status = "Waiting"
@@ -44,18 +51,52 @@ class JudgeState(db.Model):
         db.session.add(self)
         db.session.commit()
 
-    def is_allowed_see_result(self, user):
-        if self.problem.is_allowed_edit(user):
+    def is_allowed_see_result(self, user=None):
+        if user and user.is_admin:
             return True
-        if self.contest and self.contest.is_running():
-            return False
-        return self.problem.is_public
+        if user and user.id == self.problem.user.id:
+            return True
 
-    def is_allowed_see_code(self, user):
-        if user:
-            if user.is_admin or self.user.id == user.id:
+        if self.type == 0:
+            return True
+        elif self.type == 1:
+            contest = Contest.query.filter_by(id=self.type_info).first()
+            if contest.is_running():
+                return False
+            else:
                 return True
-        return self.is_allowed_see_result(user)
+        elif self.type == 2:
+            if self.user == user.id:
+                return True
+            else:
+                return False
+
+        return False
+
+    def is_allowed_see_code(self, user=None):
+        if user and user.is_admin:
+            return True
+        if user and user.id == self.problem.user.id:
+            return True
+
+        if self.type == 0:
+            return True
+        elif self.type == 1:
+            contest = Contest.query.filter_by(id=self.type_info).first()
+            if contest.is_running():
+                if self.user == user.id:
+                    return True
+                else:
+                    return False
+            else:
+                return True
+        elif self.type == 2:
+            if self.user == user.id:
+                return True
+            else:
+                return False
+
+        return False
 
     def get_result(self):
         return json.loads(self.result)
@@ -64,6 +105,14 @@ class JudgeState(db.Model):
         self.score = result["score"]
         self.status = result["status"]
         self.result = json.dumps(result)
+
+    def update_related_info(self):
+        if self.type == 0:
+            self.user.refresh_submit_info()
+            self.user.save()
+        else:
+            pass
+            # TODO: process the cause of contest
 
 
 class WaitingJudge(db.Model):

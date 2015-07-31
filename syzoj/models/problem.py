@@ -83,21 +83,20 @@ class Problem(db.Model):
         td.save()
         self.testdata = td
 
-    def is_allowed_edit(self, user):
+    def is_allowed_edit(self, user=None):
         if not user:
             return False
         if self.user_id == user.id or user.is_admin:
             return True
         return False
 
-    def is_allowed_use(self, user):
+    def is_allowed_use(self, user=None):
         if self.is_public:
             return True
         if not user:
             return False
         if self.user_id == user.id or user.is_admin:
             return True
-        # TODO:if it belong a contest  and contest is running,also allow to use
         return False
 
     def set_is_public(self, public):
