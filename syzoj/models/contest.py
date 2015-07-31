@@ -53,7 +53,7 @@ class ContestPlayer(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     contest_id = db.Column(db.Integer, db.ForeignKey("contest.id"), index=True)
     contest = db.relationship("Contest", backref=db.backref("players", lazy="dynamic"))
-    user_id = db.Column(db.Integer, db.ForignKey("user.id"), index=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), index=True)
     user = db.relationship("User", backref=db.backref("contests", lazy="dynamic"))
 
     score = db.Column(db.Integer)
@@ -96,14 +96,17 @@ class Contest(db.Model):
     # for example use "2|23|123" represent this contest use problems which id equal 2\23 or 123
     problems = db.Column(db.Text)
 
-    ranklist_id = db.Column(db.Integer, db.ForeignKey("contest_ranklist"), index=True)
-    ranklist = db.relationship("contest_ranklist", backref=db.backref("contests", lazy="dynamic"))
+    ranklist_id = db.Column(db.Integer, db.ForeignKey("contest_ranklist.id"), index=True)
+    ranklist = db.relationship("ContestRanklist", backref=db.backref("contests", lazy="dynamic"))
 
     def __init__(self, title, start_time, end_time, holder):
         self.title = title
-        self.start_time = start_time
-        self.end_time = end_time
+        self.start_time = int(start_time)
+        self.end_time = int(end_time)
         self.holder = holder
+
+        ranklist = ContestRanklist()
+        self.ranklist = ranklist
 
     def __repr__(self):
         print "<Contest %r>" % self.title
@@ -112,10 +115,19 @@ class Contest(db.Model):
         db.session.add(self)
         db.session.commit()
 
+    def new_submission(self, judge):
+        player = ContestPlayer.query.filter_by(user_id=judge.user_id, contest_id=self.id).first()
+        if not player:
+            player = ContestPlayer(self.id, judge.user_id)
+        player.update_score(judge.problem_id, judge.score, judge.id)
+        player.save()
+        self.ranklist.update(player)
+        self.ranklist.save()
+
     def is_running(self, now=None):
         if not now:
             now = int(time.time())
-        return now <= self.start_time and now <= self.end_time
+        return self.start_time <= now and now <= self.end_time
 
     def get_problems(self):
         problems = []
@@ -128,7 +140,7 @@ class Contest(db.Model):
         self.problems = ""
         for pid in problems_list:
             if Problem.query.filter_by(id=pid).first():
-                if not self.problems:
+                if self.problems:
                     self.problems += '|'
                 self.problems += str(pid)
             else:

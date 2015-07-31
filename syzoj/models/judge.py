@@ -111,8 +111,8 @@ class JudgeState(db.Model):
             self.user.refresh_submit_info()
             self.user.save()
         else:
-            pass
-            # TODO: process the cause of contest
+            contest = Contest.query.filter_by(id=self.type_info).first()
+            contest.new_submission(self)
 
 
 class WaitingJudge(db.Model):
