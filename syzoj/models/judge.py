@@ -42,7 +42,7 @@ class JudgeState(db.Model):
 
         self.score = 0
         self.status = "Waiting"
-        self.result = '{"status": "Waiting", "total_time": 0, "total_memory": 0, "score":0, "case": 0}'
+        self.result = '{"status": "Waiting", "total_time": 0, "total_memory": 0, "score":0, "case_num": 0}'
 
     def __repr__(self):
         print "<JudgeState %r>" % self.id

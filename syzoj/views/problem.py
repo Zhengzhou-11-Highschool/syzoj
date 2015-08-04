@@ -82,7 +82,7 @@ def upload_testdata(problem_id):
         if request.form.get("memory_limit"):
             problem.memory_limit = int(request.form.get("memory_limit"))
         problem.save()
-        return redirect(url_for("upload_testdata", tool=Tools, problem_id=problem_id))
+        return redirect(url_for("upload_testdata", problem_id=problem_id))
     else:
         return render_template("upload_testdata.html", tool=Tools, problem=problem, parse=FileParser.parse_as_testdata)
 

@@ -60,28 +60,25 @@ class Problem(db.Model):
         db.session.add(self)
         db.session.commit()
 
-    def update(self, title=None, description=None, input_format=None, output_format=None, limit_and_hint=None):
-        if title != None:
-            self.title = title
-        if description != None:
-            self.description = description
-        if input_format != None:
-            self.input_format = input_format
-        if output_format != None:
-            self.output_format = output_format
-        if limit_and_hint != None:
-            self.limit_and_hint = limit_and_hint
+    def update(self, title=None, description=None, input_format=None, output_format=None, example=None,
+               limit_and_hint=None):
+        self.title = title
+        self.description = description
+        self.input_format = input_format
+        self.output_format = output_format
+        self.example = example
+        self.limit_and_hint = limit_and_hint
 
     def update_testdata(self, file):
-        td_name = "testdata_%d" % self.id
-        td = File.query.filter_by(filename=td_name).first()
-        if not td:
-            td = File(file)
-        td.file = file
-        td.filename = td_name
-        td.save_file()
-        td.save()
-        self.testdata = td
+        md5 = File.calc_md5(file)
+        existing_data = File.query.filter_by(filename=md5).first()
+        if existing_data:
+            self.testdata = existing_data
+        else:
+            self.testdata = File(file)
+            self.testdata.filename = md5
+            self.testdata.save_file()
+            self.testdata.save()
 
     def is_allowed_edit(self, user=None):
         if not user:

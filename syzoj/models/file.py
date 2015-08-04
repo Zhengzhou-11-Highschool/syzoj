@@ -11,13 +11,9 @@ class File(db.Model):
     def __init__(self, file):
         self.file = file
 
-    def calc_md5(self):
-        if self.md5:
-            return self.md5
-
-        if not self.file:
-            self.file = open(self.get_file_path())
-        self.file.seek(0)
+    @staticmethod
+    def calc_md5(file):
+        file.seek(0)
         m = hashlib.md5()
         while True:
             data = file.read(8192)
@@ -25,8 +21,8 @@ class File(db.Model):
                 break
             m.update(data)
 
-        self.md5 = m.hexdigest()
-        return self.md5
+        md5 = m.hexdigest()
+        return md5
 
     def save_file(self):
         self.file.seek(0)

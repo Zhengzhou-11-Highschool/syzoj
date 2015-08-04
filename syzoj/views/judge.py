@@ -99,7 +99,7 @@ def update_judge_info(judge_id):
     if not judge:
         abort(404)
 
-    judge.update_result(json.dumps(request.form["result"]))
+    judge.update_result(json.loads(request.form["result"]))
     judge.update_related_info()
     judge.save()
 

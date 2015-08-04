@@ -46,18 +46,20 @@
     {% if see_code and see_result%}
     <div class="am-u-sm-12">
         <section class="am-accordion am-accordion-default">
-        {% for i in range(1,result["case"]+1) %}
+            {% for i in range(result["case_num"]) %}
         <dl class="am-accordion-item">
-            {% set case=result[tostr(i)] %}
-            <dt class="am-accordion-title" onclick="toggle_dd(this)">测试点:{{i}} 状态:{{case["status"]}} 运行时间:{{case["time_used"]}}ms 使用内存:{{case["memory_used"]}}kb</dt>
+            {% set case = result[tool.to_str(i)]%}
+            <dt class="am-accordion-title" onclick="toggle_dd(this)">测试点:{{i + 1}} 状态:{{case["status"]}}
+                运行时间:{{case["time_used"]}}ms 使用内存:{{case["memory_used"]}}kb
+            </dt>
             <dd class="am-accordion-content am-collapse">
                 <div class="am-accordion-content">
                     <strong>输入文件</strong>
                     <pre><code>{{case["input"]}}</code></pre>
                     <strong>期望输出</strong>
-                    <pre><code>{{case["expect_output"]}}</code></pre>
+                    <pre><code>{{case["answer"]}}</code></pre>
                     <strong>你的输出</strong>
-                    <pre><code>{{case["your_output"]}}</code></pre>
+                    <pre><code>{{case["user_out"]}}</code></pre>
                 </div>
             </dd>
         </dl>
