@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+{% block contest_tab %} am-active {% endblock %}
+{% block body %}
+<div class="am-container am-g">
+    <h1>{{ contest.title }}</h1>
+
+    <div class="am-u-sm-12">
+        <div class="am-panel am-panel-default">
+            <div class="am-panel-hd">距离比赛结束还有4小时23分28秒</div>
+            <div class="am-panel-bd">
+                {{ contest.information }}
+            </div>
+        </div>
+    </div>
+    <div class="am-u-sm-12">
+        <table class="am-table am-table-bordered">
+            <thead>
+            <tr>
+                <th width="20%">提交状态</th>
+                <th width="80%">题目</th>
+            </tr>
+            </thead>
+            {% set problems = contest.get_problems() %}
+            {% set i = 0 %}
+            {% for problem in problems %}
+            <tbody>
+            <tr>
+                <td>Accepted</td>
+                <td><a href="{{ url_for('contest_problem', contest_id=contest.id, kth_problem=i)}}">{{ problem.title
+                    }}</a></td>
+            </tr>
+            </tbody>
+            {% set i = i+1 %}
+            {% endfor %}
+        </table>
+    </div>
+    <hr/>
+</div>
+{% endblock %}

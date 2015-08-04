@@ -8,6 +8,7 @@ from .problem import problem, problem_set
 from .judge import submit_code, judge_state
 from .user import user, edit_user
 from .discussion import edit_article, article, discussion
+from .contest import contest_list
 
 
 @oj.route("/")

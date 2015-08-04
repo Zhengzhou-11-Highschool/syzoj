@@ -1,0 +1,64 @@
+{% extends "layout.html" %}
+{% block contest_tab %}am-active{% endblock %}
+{% block body %}
+<style type="text/css">
+    .problem-header{
+    text-align: center;
+    }
+    .am-panel-title{
+    font-size: 1.3em;
+    }
+</style>
+<div class="am-container am-g">
+    <div class="am-u-sm-12 problem-header">
+        <h1>{{ contest.title }} - {{ problem.title }}</h1>
+
+        <p>
+            <span class="am-badge am-badge-success am-text-sm">内存限制: {{problem.memory_limit}} MB</span>
+            <span class="am-badge am-badge-warning am-text-sm">时间限制: {{problem.time_limit}} ms</span>
+        </p>
+    </div>
+    <div class="am-u-sm-12">
+        <div class="am-panel am-panel-default">
+
+            <div class="am-panel-hd"><h3 class="am-panel-title">题目描述</h3></div>
+            <div class="am-panel-bd" id="description">{{problem.description}}</div>
+
+            <div class="am-panel-hd"><h3 class="am-panel-title">输入格式</h3></div>
+            <div class="am-panel-bd" id="input">{{problem.input_format}}</div>
+
+            <div class="am-panel-hd"><h3 class="am-panel-title">输出格式</h3></div>
+            <div class="am-panel-bd" id="output">{{problem.output_format}}</div>
+
+            <div class="am-panel-hd"><h3 class="am-panel-title">测试样例</h3></div>
+            <div class="am-panel-bd" id="example">{{problem.example}}</div>
+
+            <div class="am-panel-hd"><h3 class="am-panel-title">数据范围与提示</h3></div>
+            <div class="am-panel-bd" id="hint">{{problem.limit_and_hint}}</div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block script %}
+<script src="{{ url_for('static', filename='marked.js') }}"></script>
+<script type="text/javascript">
+function render(tag){
+    tag.html(marked(tag.html()));
+}
+marked.setOptions({
+  highlight: function (code) {
+    return "<code>"+code+"</code>";
+  }
+});
+$(document).ready(function(){
+    render($("#description"));
+    render($("#input"));
+    render($("#output"));
+    render($("#example"));
+    render($("#hint"));
+    $("pre").addClass("prettyprint");
+    prettyPrint();
+});
+
+</script>
+{% endblock %}
