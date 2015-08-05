@@ -34,6 +34,10 @@
             {% endfor %}
         </table>
     </div>
+    <div class="am-u-sm-12">
+        <h4>排行榜</h4>
+        {{ contest.get_ranklist() }}
+    </div>
     <hr/>
 </div>
 {% endblock %}

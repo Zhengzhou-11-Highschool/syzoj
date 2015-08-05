@@ -17,8 +17,16 @@
             {% set contests = sorter.get() %}
             {% for contest in contests %}
             <tr>
+                {% if now < contest.start_time %}
+                {% set tag = '<span class="am-badge am-badge-success">未开始</span>' %}
+                {% elif contest.is_running() %}
+                {% set tag = '<span class="am-badge am-badge-warning">进行中</span>' %}
+                {% else %}
+                {% set tag = '<span class="am-badge am-badge-danger">已结束</span>' %}
+                {% endif %}
+
                 <td><a href="{{url_for('contest',contest_id=contest.id)}}">{{contest.title}}</a></td>
-                <td>{{ tool.pretty_time(contest.start_time) }}</td>
+                <td>{{ tool.pretty_time(contest.start_time) }}{{ tag|safe }}</td>
                 <td>{{ contest.information }}</td>
             </tr>
             {% endfor %}
