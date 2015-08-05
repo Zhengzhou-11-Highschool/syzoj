@@ -46,8 +46,7 @@ def edit_problem(problem_id):
     if request.method == "POST":
         if not problem:
             problem_id = controller.create_problem(user=user, title=request.form.get("title"))
-            problem = Problem.query.filter_by(id=problem_id)
-
+            problem = Problem.query.filter_by(id=problem_id).first()
         problem.update(title=request.form.get("title"),
                        description=request.form.get("description"),
                        input_format=request.form.get("input_format"),

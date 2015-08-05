@@ -29,8 +29,12 @@ def submit_code(problem_id):
             return show_error("Please check out your code length.The code should less than 100kb.",
                               url_for("submit_code", problem_id=problem.id))
         language = "C++"  # ...
+
         judge = JudgeState(code=code, user=user, language=language, problem=problem)
+        if not problem.is_public:
+            judge.type = 2
         judge.save()
+
         waiting = WaitingJudge(judge)
         waiting.save()
         return redirect(url_for("judge_detail", judge_id=judge.id))

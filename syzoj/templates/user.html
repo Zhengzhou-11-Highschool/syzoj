@@ -44,8 +44,9 @@
 	<div class="am-u-sm-4">
 		<div class="am-panel am-panel-default">
 			<div class="am-panel-hd">一共通过了{{shown_user.ac_num}}道题</div>
+            {% set ac_problems = shown_user.get_ac_problems() %}
 			<div class="am-panel-bd">
-				{% for pid in ac_problems%}
+                {% for pid, title in ac_problems%}
 				<a href="{{url_for('problem',problem_id=pid)}}">{{pid}}</a>
 				{% endfor %}
 	  		</div>

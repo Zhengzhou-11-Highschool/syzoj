@@ -66,7 +66,7 @@ class JudgeState(db.Model):
             else:
                 return True
         elif self.type == 2:
-            if self.user == user.id:
+            if user and self.user == user.id:
                 return True
             else:
                 return False
@@ -84,14 +84,14 @@ class JudgeState(db.Model):
         elif self.type == 1:
             contest = Contest.query.filter_by(id=self.type_info).first()
             if contest.is_running():
-                if self.user == user.id:
+                if user and self.user == user.id:
                     return True
                 else:
                     return False
             else:
                 return True
         elif self.type == 2:
-            if self.user == user.id:
+            if user and self.user == user.id:
                 return True
             else:
                 return False
@@ -110,7 +110,12 @@ class JudgeState(db.Model):
         if self.type == 0:
             self.user.refresh_submit_info()
             self.user.save()
-        else:
+
+            self.problem.submit_num += 1
+            if self.status == "Accepted":
+                self.problem.ac_num += 1
+            self.problem.save()
+        elif self.type == 1:
             contest = Contest.query.filter_by(id=self.type_info).first()
             contest.new_submission(self)
 

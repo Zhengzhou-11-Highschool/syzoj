@@ -99,7 +99,7 @@ class User(db.Model):
 
     def get_ac_problems(self):
         ac_problems = set()
-        for judge in self.submit_num.all():
+        for judge in self.submit.filter_by(status="Accepted").all():
             if judge.is_allowed_see_result(None) and judge.status == "Accepted":
                 problem = Problem.query.filter_by(id=judge.problem_id).first()
                 ac_problems.add((judge.problem_id, problem.title))
