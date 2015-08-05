@@ -2,8 +2,9 @@ from urllib import urlencode
 import time
 from flask import render_template, url_for, request, abort, redirect
 from syzoj import oj, db
-from syzoj.models import Contest
+from syzoj.models import Contest, User
 from syzoj.controller import Tools, Paginate
+from .common import need_login, not_have_permission
 
 
 @oj.route("/contest")
@@ -14,7 +15,7 @@ def contest_list():
         return url_for("contest_list") + "?" + urlencode({"page": page})
 
     sorter = Paginate(query, make_url=make_url, cur_page=request.args.get("page"), edge_display_num=3, per_page=10)
-    return render_template("contest_list.html", tool=Tools, sorter=sorter)
+    return render_template("contest_list.html", tool=Tools, sorter=sorter, now=time.time())
 
 
 @oj.route("/contest/<int:contest_id>")
@@ -38,3 +39,35 @@ def contest_problem(contest_id, kth_problem):
         return redirect(url_for("problem", problem_id=problem.id))
 
     return render_template("contest_problem.html", tool=Tools, problem=problem, contest=contest)
+
+
+@oj.route("/contest/<int:contest_id>/edit", methods=["GET", "POST"])
+def edit_contest(contest_id):
+    user = User.get_cur_user()
+    if not user:
+        return need_login()
+
+    contest = Contest.query.filter_by(id=contest_id).first()
+    if contest and not contest.is_allowed_edit(user):
+        return not_have_permission()
+
+    if request.method == "POST":
+        if not contest:
+            contest = Contest(title=request.form.get("title"),
+                              start_time=request.form.get("start_time"),
+                              end_time=request.form.get("end_time"),
+                              holder=user)
+
+        contest.title = request.form.get("title")
+        contest.start_time = request.form.get("start_time")
+        contest.end_time = request.form.get("end_time")
+        contest.information = request.form.get("information")
+
+        problems_list = [int(pid) for pid in request.form.get("problems").split(",")]
+        contest.set_problems(problems_list)
+
+        contest.save()
+
+        return redirect(url_for("contest", contest_id=contest_id))
+    else:
+        return render_template("edit_contest.html", tool=Tools, contest=contest)

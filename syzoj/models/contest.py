@@ -30,22 +30,21 @@ class ContestRanklist(db.Model):
         ranklist = json.loads(self.ranklist)
         players = []
         for i in range(ranklist["player_num"]):
-            player = ContestPlayer.query.filter_by(id=ranklist[i]).first()
+            player = ContestPlayer.query.filter_by(id=ranklist[str(i)]).first()
             players.append(player)
         return players
 
     def update(self, new_player=None):
         players = self.get_players()
-        if new_player:
+        if not new_player in players:
             players.append(new_player)
 
         sorted(players, cmp=lambda x, y: x.score > y.score or (x.score == y.score and x.time_spent < y.time_spent))
 
         ranklist = {"player_num": len(players)}
-        rank = 1
-        for player in players:
+        for rank, player in enumerate(players):
             ranklist[rank] = player.id
-            rank += 1
+
         self.ranklist = json.dumps(ranklist)
 
 
@@ -68,11 +67,18 @@ class ContestPlayer(db.Model):
         self.time_spent = 0
         self.score_details = ""
 
+    def __repr__(self):
+        return "<ContestPlayer contest_id:%s user_id=%s score_details=%s>" % \
+               (self.contest_id, self.user_id, self.score_details)
+
     def update_score(self, problem, score, judge_id):
-        score_details = json.loads(self.score_details)
+        score_details = {}
+        if self.score_details:
+            self.score_details = json.loads(self.score_details)
         if problem in score_details:
             self.score -= score_details[problem]["score"]
         self.score += score
+        score_details[problem] = {}
         score_details[problem]["score"] = score
         score_details[problem]["judge_id"] = judge_id
         self.score_details = json.dumps(score_details)
@@ -109,14 +115,26 @@ class Contest(db.Model):
         self.ranklist = ranklist
 
     def __repr__(self):
-        print "<Contest %r>" % self.title
+        return "<Contest %r>" % self.title
 
     def save(self):
         db.session.add(self)
         db.session.commit()
 
+    def is_allowed_edit(self, user=None):
+        if user and user.is_admin:
+            return True
+        if user and user.id == self.holder.id:
+            return True
+        return False
+
     def new_submission(self, judge):
-        player = ContestPlayer.query.filter_by(user_id=judge.user_id, contest_id=self.id).first()
+        problems = self.get_problems()
+        if judge.problem not in problems:
+            pass
+            return False
+
+        player = self.players.filter_by(user_id=judge.user_id).first()
         if not player:
             player = ContestPlayer(self.id, judge.user_id)
         player.update_score(judge.problem_id, judge.score, judge.id)
@@ -128,6 +146,9 @@ class Contest(db.Model):
         if not now:
             now = int(time.time())
         return self.start_time <= now and now <= self.end_time
+
+    def get_ranklist(self):
+        return self.ranklist.ranklist
 
     def get_problems(self):
         problems = []

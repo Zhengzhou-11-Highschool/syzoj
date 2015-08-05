@@ -5,7 +5,7 @@ from flask import jsonify, redirect, url_for, abort, request, render_template
 
 from syzoj import oj, db
 from syzoj.controller import Tools
-from syzoj.models import JudgeState, WaitingJudge, Problem, User
+from syzoj.models import JudgeState, WaitingJudge, Problem, User, Contest
 from syzoj.controller import Paginate
 from .common import need_login, not_have_permission, show_error
 
@@ -20,21 +20,30 @@ def submit_code(problem_id):
     if not problem:
         abort(404)
 
-    if problem.is_allowed_use(user) == False:
-        return not_have_permission()
-
     if request.method == "POST":
         code = request.form.get("code")
+        language = "C++"
         if not code or len(code) <= 0 or len(code) >= 1024 * 100:
             return show_error("Please check out your code length.The code should less than 100kb.",
                               url_for("submit_code", problem_id=problem.id))
-        language = "C++"  # ...
 
         judge = JudgeState(code=code, user=user, language=language, problem=problem)
-        if not problem.is_public:
-            judge.type = 2
-        judge.save()
 
+        contest_id = request.args.get("contest_id")
+        if contest_id:
+            contest = Contest.query.filter_by(id=contest_id).first()
+            if contest and contest.is_running():
+                judge.type = 1
+                judge.type_info = contest_id
+            else:
+                return show_error("Sorry.The contest has been ended.", next=url_for("contest", contest_id=contest.id))
+        else:
+            if not problem.is_allowed_use(user):
+                return show_error("Sorry.You don't have permission.", next=url_for("index"))
+            if not problem.is_public:
+                judge.type = 2
+
+        judge.save()
         waiting = WaitingJudge(judge)
         waiting.save()
         return redirect(url_for("judge_detail", judge_id=judge.id))

@@ -84,7 +84,7 @@ class JudgeState(db.Model):
         elif self.type == 1:
             contest = Contest.query.filter_by(id=self.type_info).first()
             if contest.is_running():
-                if user and self.user == user.id:
+                if user and self.user == user:
                     return True
                 else:
                     return False
