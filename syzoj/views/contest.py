@@ -41,6 +41,19 @@ def contest_problem(contest_id, kth_problem):
     return render_template("contest_problem.html", tool=Tools, problem=problem, contest=contest)
 
 
+@oj.route("/contest/<int:contest_id>/ranklist")
+def contest_ranklist(contest_id):
+    user = User.get_cur_user()
+    contest = Contest.query.filter_by(id=contest_id).first()
+    if not contest:
+        abort(404)
+    now = time.time()
+    if contest.is_allowed_edit(user) or now > contest.end_time:
+        return render_template("contest_ranklist.html", tool=Tools, contest=contest)
+    else:
+        return not_have_permission()
+
+
 @oj.route("/contest/<int:contest_id>/edit", methods=["GET", "POST"])
 def edit_contest(contest_id):
     user = User.get_cur_user()

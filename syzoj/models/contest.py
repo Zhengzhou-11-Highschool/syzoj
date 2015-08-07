@@ -74,14 +74,20 @@ class ContestPlayer(db.Model):
     def update_score(self, problem, score, judge_id):
         score_details = {}
         if self.score_details:
-            self.score_details = json.loads(self.score_details)
-        if problem in score_details:
-            self.score -= score_details[problem]["score"]
-        self.score += score
-        score_details[problem] = {}
-        score_details[problem]["score"] = score
-        score_details[problem]["judge_id"] = judge_id
+            score_details = json.loads(self.score_details)
+        score_details[problem.id] = {}
+        score_details[problem.id]["score"] = score
+        score_details[problem.id]["judge_id"] = judge_id
+        score_details["score"] = 0
+        for key, val in score_details.iteritems():
+            if isinstance(val, dict):
+                score_details["score"] += val["score"]
+        self.score = score_details["score"]
+        self.time_spent = problem.submit_num
         self.score_details = json.dumps(score_details)
+
+    def get_score_details(self):
+        return json.loads(self.score_details)
 
     def save(self):
         db.session.add(self)
@@ -137,7 +143,7 @@ class Contest(db.Model):
         player = self.players.filter_by(user_id=judge.user_id).first()
         if not player:
             player = ContestPlayer(self.id, judge.user_id)
-        player.update_score(judge.problem_id, judge.score, judge.id)
+        player.update_score(judge.problem, judge.score, judge.id)
         player.save()
         self.ranklist.update(player)
         self.ranklist.save()

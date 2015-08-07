@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+{% block contest_tab %}am-active{% endblock %}
+{% block body %}
+<div class="am-container am-g">
+    <h1>{{ contest.title }}排名</h1>
+
+    <div class="am-u-sm-12">
+        <table class="am-table">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>用户昵称</th>
+                {% set problems = contest.get_problems() %}
+                {% set i = 0 %}
+                {% for problem in problems %}
+                <th><a href="{{ url_for('contest_problem', contest_id=contest.id, kth_problem=i) }}">{{ problem.title
+                    }}</a></th>
+                {% set i = i + 1 %}
+                {% endfor %}
+                <th>总分</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% set players = contest.ranklist.get_players() %}
+            {% set i = 1 %}
+            {% for player in players%}
+            {% set user = player.user %}
+            {% set score_details = player.get_score_details() %}
+            <tr>
+                <td>{{ i }}</td>
+                <td><a href="{{ url_for('user', user_id=user.id) }}">{{ user.nickname }}</a>{% if user.nameplate
+                    %}{{user.nameplate|safe}}{% endif %}
+                </td>
+                {% for problem in problems %}
+                {% set pid = tool.to_str(problem.id) %}
+                {% if pid in score_details %}
+                <td><a href="{{ url_for('judge_detail', judge_id=score_details[pid]['judge_id']) }}">{{
+                    score_details[pid]['score'] }}</a></td>
+                {% else %}
+                <td></td>
+                {% endif %}
+                {% endfor %}
+                <td>{{ player.score }}</td>
+            </tr>
+            {% set i = i + 1 %}
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{%endblock%}
