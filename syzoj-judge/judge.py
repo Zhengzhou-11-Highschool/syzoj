@@ -8,9 +8,10 @@ import json
 import lorun
 from random import randint
 
-_DOWNLOAD_TESTDATA_URL = "http://192.168.3.3:8811/static/uploads"
-_GET_TASK_URL = "http://192.168.3.3:8811/api/waiting_judge"
-_UPLOAD_TASK_URL = "http://192.168.3.3:8811/api/update_judge"
+_SYZOJ_URL = "http://localhost:8811"
+_DOWNLOAD_TESTDATA_URL = _SYZOJ_URL + "/static/uploads"
+_GET_TASK_URL = _SYZOJ_URL + "/api/waiting_judge"
+_UPLOAD_TASK_URL = _SYZOJ_URL + "/api/update_judge"
 _SESSION_ID = "77783949202395150352388871624955475980489287735056"
 _TESTDATA_DIR = os.path.join(os.path.abspath(os.path.dirname(__file__)), "testdata")
 

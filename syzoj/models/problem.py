@@ -70,15 +70,10 @@ class Problem(db.Model):
         self.limit_and_hint = limit_and_hint
 
     def update_testdata(self, file):
-        md5 = File.calc_md5(file)
-        existing_data = File.query.filter_by(filename=md5).first()
-        if existing_data:
-            self.testdata = existing_data
-        else:
-            self.testdata = File(file)
-            self.testdata.filename = md5
-            self.testdata.save_file()
-            self.testdata.save()
+        self.testdata = File(file)
+        self.testdata.filename = "test_data_%d.zip" % self.id
+        self.testdata.save_file()
+        self.testdata.save()
 
     def is_allowed_edit(self, user=None):
         if not user:

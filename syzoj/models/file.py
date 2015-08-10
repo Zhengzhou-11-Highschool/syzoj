@@ -5,11 +5,12 @@ import hashlib
 
 class File(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    filename = db.Column(db.String(120), unique=True, index=True)
+    filename = db.Column(db.String(120), index=True)
     md5 = db.Column(db.String(50), index=True)
 
     def __init__(self, file):
         self.file = file
+        self.md5 = self.calc_md5(file)
 
     @staticmethod
     def calc_md5(file):
@@ -26,10 +27,10 @@ class File(db.Model):
 
     def save_file(self):
         self.file.seek(0)
-        self.file.save(os.path.join(oj.config['UPLOAD_FOLDER'], self.filename))
+        self.file.save(os.path.join(oj.config['UPLOAD_FOLDER'], self.md5))
 
     def get_file_path(self):
-        return os.path.join(oj.config["UPLOAD_FOLDER"], self.filename)
+        return os.path.join(oj.config["UPLOAD_FOLDER"], self.md5)
 
     def save(self):
         db.session.add(self)

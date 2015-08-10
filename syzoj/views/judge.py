@@ -97,7 +97,7 @@ def get_judge_info():
                     "judge_id": judge.id,
                     "code": judge.code,
                     "language": judge.language,
-                    "testdata": judge.problem.testdata.filename,
+                    "testdata": judge.problem.testdata.md5,
                     "time_limit": judge.problem.time_limit,
                     "memory_limit": judge.problem.memory_limit})
 
