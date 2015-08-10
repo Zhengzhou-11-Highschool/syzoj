@@ -113,8 +113,8 @@ class Contest(db.Model):
 
     def __init__(self, title, start_time, end_time, holder):
         self.title = title
-        self.start_time = int(start_time)
-        self.end_time = int(end_time)
+        self.start_time = start_time
+        self.end_time = end_time
         self.holder = holder
 
         ranklist = ContestRanklist()
@@ -157,6 +157,9 @@ class Contest(db.Model):
         return self.ranklist.ranklist
 
     def get_problems(self):
+        if not self.problems:
+            return []
+
         problems = []
         for pid in self.problems.split('|'):
             pid = int(pid)

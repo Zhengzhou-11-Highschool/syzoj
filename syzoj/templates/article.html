@@ -23,6 +23,23 @@
 	        <div class="am-panel-bd" id="content">{{article.content}}</div>
 	    </div>
     </div>
+    <div class="am-u-sm-12">
+        <h4>共{{ comment_num }}条回复</h4>
+        {% for comment in comments %}
+        <div class="am-panel am-panel-default">
+            <div class="am-panel-bd">{{ comment.content }}</div>
+        </div>
+        {% endfor %}
+    </div>
+    <hr/>
+    <div class="am-u-sm-12">
+        <form class="am-form" action="{{ url_for('comment_article', article_id=article.id) }}" method="post">
+            <div class="am-form-group">
+                <textarea rows="5" name="comment"></textarea>
+            </div>
+            <button type="submit" class="am-btn am-btn-primary">发表回复</button>
+        </form>
+    </div>
 </div>
 {% endblock %}
 

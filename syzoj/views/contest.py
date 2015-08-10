@@ -76,11 +76,14 @@ def edit_contest(contest_id):
         contest.end_time = request.form.get("end_time")
         contest.information = request.form.get("information")
 
-        problems_list = [int(pid) for pid in request.form.get("problems").split(",")]
+        try:
+            problems_list = [int(pid) for pid in request.form.get("problems").split(",")]
+        except:
+            problems_list = []
         contest.set_problems(problems_list)
 
         contest.save()
 
-        return redirect(url_for("contest", contest_id=contest_id))
+        return redirect(url_for("contest", contest_id=contest.id))
     else:
         return render_template("edit_contest.html", tool=Tools, contest=contest)

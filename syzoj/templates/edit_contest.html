@@ -3,12 +3,14 @@
 {% block body %}
 <div class="am-container am-g">
     {% if contest %}
-    <h1>新建比赛</h1>
-    {% else %}
     <h1>修改 {{ contest.title }}</h1>
+    {% set contest_id = contest.id %}
+    {% else %}
+    <h1>新建比赛</h1>
+    {% set contest_id = 0 %}
     {% endif %}
     <div class="am-u-sm-12">
-        <form class="am-form" action="{{ url_for('edit_contest',contest_id=contest.id) }}" method="post">
+        <form class="am-form" action="{{ url_for('edit_contest',contest_id=contest_id) }}" method="post">
             <div class="am-form-group">
                 <label>比赛名称</label>
                 <input type="text" name="title" value="{% if contest %}{{ contest.title }}{% endif %}">
