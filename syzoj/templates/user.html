@@ -6,6 +6,16 @@
 		<div class="am-u-sm-6">
 			<div class="am-panel am-panel-default">
 			 	<div class="am-panel-hd">
+			 		<h3 class="am-panel-title">头像</h3>
+			 	</div>
+			 	<div class="am-panel-bd">
+			 		<img src="{{shown_user.get_gravatar_url(160)}}">
+				</div>
+			</div>
+		</div>
+		<div class="am-u-sm-6">
+			<div class="am-panel am-panel-default">
+			 	<div class="am-panel-hd">
 			   		<h3 class="am-panel-title">用户昵称</h3>
 			 	</div>
 			 	<div class="am-panel-bd">
@@ -20,18 +30,29 @@
 				</div>
 			</div>
 		</div>
-		<div class="am-u-sm-6">
+
+		<div class="am-u-sm-12">
 			<div class="am-panel am-panel-default">
 			 	<div class="am-panel-hd">
-			 		<h3 class="am-panel-title">头像</h3>
+			 		<h3 class="am-panel-title">共发表了{{ articles_num }}篇文章</h3>
 			 	</div>
-			 	<div class="am-panel-bd">
-			 		<img src="{{shown_user.get_gravatar_url(160)}}">
+				<div class="am-panel-bd">
+					<table class="am-table">
+						<tbody>
+						{% for article in articles %}
+							<tr>
+								<td><a href="{{url_for('article',article_id=article.id)}}">{{article.title}}</a></td>
+								<td>{{tool.pretty_time(article.public_time)}}</td>
+							</tr>
+						{% endfor %}
+						</tbody>
+					</table>
 				</div>
 			</div>
 		</div>
-		<div class="am-u-sm-12">
-			<div class="am-panel am-panel-default">
+	</div>
+	<div class="am-u-sm-4">
+		<div class="am-panel am-panel-default">
 			 	<div class="am-panel-hd">
 			   		<h3 class="am-panel-title">个性签名</h3>
 			 	</div>
@@ -39,9 +60,6 @@
 					<p>{%if shown_user.information%}{{shown_user.information}}{%else%}泥萌看什么看，{{shown_user.nickname}}什么都没有说{%endif%}</p>
 				</div>
 			</div>
-		</div>
-	</div>
-	<div class="am-u-sm-4">
 		<div class="am-panel am-panel-default">
 			<div class="am-panel-hd">一共通过了{{shown_user.ac_num}}道题</div>
             {% set ac_problems = shown_user.get_ac_problems() %}
