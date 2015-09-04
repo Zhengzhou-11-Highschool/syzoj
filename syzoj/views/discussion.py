@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import time
 from urllib import urlencode
 
@@ -11,7 +12,7 @@ from .common import need_login, not_have_permission, show_error
 
 @oj.route("/discussion")
 def discussion():
-    query = Article.query
+    query = Article.query.order_by(Article.sort_time.desc())
 
     def make_url(page, other):
         return url_for("discussion") + "?" + urlencode({"page": page})
@@ -24,7 +25,7 @@ def discussion():
 def article(article_id):
     article = Article.query.filter_by(id=article_id).first()
     if not article:
-        return show_error("Can't find article", url_for('index'))
+        return show_error("找不到文章", url_for('index'))
     comments = Comment.query.filter_by(article_id=article_id).all()
     return render_template("article.html", tool=Tools, article=article,
                            comment_num=len(comments), comments=comments, tab="discussion")
@@ -79,7 +80,7 @@ def delete_article(article_id):
         article.delete()
         return redirect(url_for("discussion"))
     else:
-        return render_template("delete_article.html", user=user, article=article)
+        return render_template("delete_article.html", tool = Tools, user=user, article=article)
 
 
 @oj.route("/article/<int:article_id>/comment", methods=["POST"])
@@ -92,8 +93,8 @@ def comment_article(article_id):
         return need_login()
 
     comment_str = request.form.get("comment")
-    if not comment_str:
-        return show_error("Please input your comment.Don't allowed submit empty comment.",
+    if not comment_str.replace(" ", ""):
+        return show_error("请输入评论",
                           next=url_for("article", article_id=article_id))
 
     comment = Comment(comment_str, article, user)
