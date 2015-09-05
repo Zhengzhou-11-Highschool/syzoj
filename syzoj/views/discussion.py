@@ -26,9 +26,16 @@ def article(article_id):
     article = Article.query.filter_by(id=article_id).first()
     if not article:
         return show_error("找不到文章", url_for('index'))
-    comments = Comment.query.filter_by(article_id=article_id).all()
+
+    comments = Comment.query.filter_by(article_id=article_id)
+    comments_num = comments.count()
+
+    def make_url(page, other):
+        return url_for("article", article_id=article_id) + "?" + urlencode({"page": page})
+    sorter = Paginate(comments, make_url=make_url, cur_page=request.args.get("page"), edge_display_num=3, per_page=10)
+
     return render_template("article.html", tool=Tools, article=article,
-                           comment_num=len(comments), comments=comments, tab="discussion")
+                           comment_num=comments_num, sorter=sorter, tab="discussion")
 
 
 @oj.route("/article/<int:article_id>/edit", methods=["GET", "POST"])
