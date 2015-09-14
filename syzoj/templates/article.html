@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block body %}
-<style type="text/css">
+<style type="text/css" xmlns:style="http://www.w3.org/1999/xhtml">
     .small{
     font-size: 0.7em;
     }
@@ -25,11 +25,22 @@
     </div>
     <div class="am-u-sm-12">
         <h4>共{{ comment_num }}条回复</h4>
+        {% set comments = sorter.get() %}
         {% for comment in comments %}
-        <div class="am-panel am-panel-default">
-            <div class="am-panel-bd">{{ comment.content }}</div>
+        <div class="am-panel am-panel-default am-u-sm-12">
+            <div class="am-panel-bd" style="padding: 0px;margin: 0px;">
+                <div class="am-u-sm-2" style="text-align:center;">
+                    <p class="small" style="display: block;padding: 0px;margin: 0px;">
+                        {{ tool.pretty_time(comment.public_time) }}
+                    </p>
+                    <img src="{{comment.user.get_gravatar_url(80)}}" style="vertical-align:middle">
+                    <p style="display: block;padding: 0px;margin: 0px;"><a href="{{url_for('user',user_id=comment.user.id)}}">{{comment.user.nickname}}</a></p>
+                </div>
+                <div class="am-u-sm-10">{{ comment.content }}</div>
+            </div>
         </div>
         {% endfor %}
+        {{ sorter.get_html() | safe }}
     </div>
     <hr/>
     <div class="am-u-sm-12">

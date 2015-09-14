@@ -1,7 +1,7 @@
 from flask import redirect, url_for, request, render_template
 
 from syzoj import oj, db
-from syzoj.models import User
+from syzoj.models import User, Article
 from syzoj.controller import Paginate, Tools, Checker
 from .common import not_have_permission, show_error
 
@@ -14,7 +14,11 @@ def user(user_id):
     user.refresh_submit_info()
     user.save()
 
-    return render_template("user.html", tool=Tools, shown_user=user)
+    articles = Article.query.filter_by(user_id = user.id).order_by(Article.public_time.desc()).all()
+    articles_num = len(articles)
+
+    return render_template("user.html", tool=Tools, shown_user=user,
+                            articles_num = articles_num, articles = articles)
 
 @oj.route("/user/<int:user_id>/edit", methods=["GET", "POST"])
 def edit_user(user_id):
