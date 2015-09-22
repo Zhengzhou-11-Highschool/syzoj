@@ -39,7 +39,8 @@ class ContestRanklist(db.Model):
         if not new_player in players:
             players.append(new_player)
 
-        sorted(players, cmp=lambda x, y: x.score > y.score or (x.score == y.score and x.time_spent < y.time_spent))
+        players.sort(key = lambda p: p.score, reverse = True)
+        # players.sort(cmp=lambda x, y: x.score > y.score or (x.score == y.score and x.time_spent < y.time_spent))
 
         ranklist = {"player_num": len(players)}
         for rank, player in enumerate(players):
@@ -75,9 +76,10 @@ class ContestPlayer(db.Model):
         score_details = {}
         if self.score_details:
             score_details = json.loads(self.score_details)
-        score_details[problem.id] = {}
-        score_details[problem.id]["score"] = score
-        score_details[problem.id]["judge_id"] = judge_id
+        pid = str(problem.id)
+        score_details[pid] = {}
+        score_details[pid]["score"] = score
+        score_details[pid]["judge_id"] = judge_id
         score_details["score"] = 0
         for key, val in score_details.iteritems():
             if isinstance(val, dict):
