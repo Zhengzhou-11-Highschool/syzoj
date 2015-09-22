@@ -1,8 +1,10 @@
+# -*- coding: utf-8 -*-
+
 from urllib import urlencode
 import time
 from flask import render_template, url_for, request, abort, redirect
 from syzoj import oj, db
-from syzoj.models import Contest, User
+from syzoj.models import Contest, User, JudgeState
 from syzoj.controller import Tools, Paginate
 from .common import need_login, not_have_permission
 
@@ -21,7 +23,24 @@ def contest_list():
 @oj.route("/contest/<int:contest_id>")
 def contest(contest_id):
     contest = Contest.query.filter_by(id=contest_id).first()
-    return render_template("contest.html", tool=Tools, contest=contest)
+    user = User.get_cur_user()
+    player = None
+    info = {}
+    if user: player = contest.players.filter_by(user_id = user.id).first()
+    if player:
+        details = player.get_score_details()
+        for key, val in details.iteritems():
+            if isinstance(val, dict):
+                pid = int(key)
+                jid = int(val["judge_id"])
+                status = JudgeState.query.filter_by(id = jid).first().status
+                url = url_for("judge_detail", judge_id = jid)
+                if contest.is_running():
+                    info[pid] = u"<a href = '%s'>已提交</a>" % (url)
+                else:
+                    info[pid] = "<a href = '%s'>%s</a>" % (url, status)
+        
+    return render_template("contest.html", tool=Tools, contest=contest, info = info)
 
 
 @oj.route("/contest/<int:contest_id>/<int:kth_problem>")
