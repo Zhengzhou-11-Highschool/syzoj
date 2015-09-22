@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #!/usr/bin/python
 import os
 import time
@@ -6,14 +7,16 @@ import urllib
 import urllib2
 import json
 import lorun
+import codecs
 from random import randint
 
-_SYZOJ_URL = "http://localhost:8811"
+_SYZOJ_URL = "http://localhost"
 _DOWNLOAD_TESTDATA_URL = _SYZOJ_URL + "/static/uploads"
 _GET_TASK_URL = _SYZOJ_URL + "/api/waiting_judge"
 _UPLOAD_TASK_URL = _SYZOJ_URL + "/api/update_judge"
 _SESSION_ID = "77783949202395150352388871624955475980489287735056"
-_TESTDATA_DIR = os.path.join(os.path.abspath(os.path.dirname(__file__)), "testdata")
+_BASE_DIR = os.path.join(os.path.abspath(os.path.dirname(__file__)))
+_TESTDATA_DIR = os.path.join(_BASE_DIR, "testdata")
 
 if not os.path.isdir(_TESTDATA_DIR):
     os.mkdir(_TESTDATA_DIR)
@@ -23,12 +26,12 @@ def compile_src(source, des):
     source_file = des + "_tmp.cpp"
     exe_file = des
 
-    with open(source_file, "w") as f:
+    with codecs.open(source_file, "w", "utf-8") as f:
         f.write(source)
 
     if os.path.isfile(des):
         os.remove(des)
-    os.system("g++ " + source_file + " -o " + exe_file)
+    os.system("g++ " + source_file + " -o " + exe_file + " -lm")
     os.remove(source_file)
 
     if os.path.isfile(des):
