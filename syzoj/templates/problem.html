@@ -34,7 +34,7 @@
         {% endif %}
     </div>
     <div class="am-u-sm-12">
-        <div class="am-panel am-panel-default">
+        <div class="am-panel am-panel-default" id="problem-panel">
     
             <div class="am-panel-hd"><h3 class="am-panel-title">题目描述</h3></div>
             <div class="am-panel-bd" id="description">{{problem.description}}</div>
@@ -55,6 +55,13 @@
 </div>
 {% endblock %}
 {% block script %}
+
+<!-- KaTex -->
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/KaTeX/0.3.0/katex.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/KaTeX/0.3.0/katex.min.js"></script>
+<!-- KaTex autoRender -->
+<script src="{{ url_for('static', filename='auto-render.js') }}"></script>
+
 <script src="{{ url_for('static', filename='marked.js') }}"></script>
 <script type="text/javascript">
 function render(tag){
@@ -71,6 +78,7 @@ $(document).ready(function(){
     render($("#output"));
     render($("#example"));
     render($("#hint"));
+    renderMathInElement(document.getElementById("problem-panel"));
     $("pre").addClass("prettyprint");
     prettyPrint();
     //$("#description").html(marked($("#description").html()));
