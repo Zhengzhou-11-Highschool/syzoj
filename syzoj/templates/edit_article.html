@@ -14,7 +14,7 @@
         <h1>发表文章</h1>
     {% endif %}
     <form class="am-form" method="post" action="{{url_for('edit_article',article_id=article_id)}}">
-        <div data-am-widget="tabs" class="am-tabs am-tabs-d2">
+        <div data-am-widget="tabs" class="am-tabs am-tabs-d2" data-am-tabs="{noSwipe: 1}">
             <ul class="am-tabs-nav am-cf">
                 <li class="am-active" id="edit">
                     <a href="#">编辑</a>
