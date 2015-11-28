@@ -47,7 +47,7 @@ def edit_user(user_id):
             if edited_user.password != old_password:
                 status = 3002
             else:
-                if not Checker.is_valid_password(new_password):
+                if Checker.is_valid_password(new_password):
                     edited_user.password = new_password
                 else:
                     status = 3003
