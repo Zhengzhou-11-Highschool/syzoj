@@ -31,7 +31,7 @@ def compile_src(source, des):
 
     if os.path.isfile(des):
         os.remove(des)
-    os.system("g++ " + source_file + " -o " + exe_file + " -lm")
+    os.system("g++ " + source_file + " -o " + exe_file + " -lm -DONLINE_JUDGE")
     os.remove(source_file)
 
     if os.path.isfile(des):
