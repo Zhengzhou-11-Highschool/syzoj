@@ -13,14 +13,14 @@
                     <label class="am-u-sm-2 am-form-label">用户名</label>
 
                     <div class="am-u-sm-10">
-                        <input type="text" placeholder="用户名将用于登陆" id="username">
+                        <input type="text" placeholder="用户名将用于登陆" id="username" onkeydown = key_login()>
                     </div>
                 </div>
                 <div class="am-form-group">
                     <label class="am-u-sm-2 am-form-label">邮箱</label>
 
                     <div class="am-u-sm-10">
-                        <input type="email" placeholder="电子邮箱" id="email">
+                        <input type="email" placeholder="电子邮箱" id="email" onkeydown = key_login()>
                     </div>
                 </div>
                 <div class="am-form-group">
@@ -28,8 +28,8 @@
 
                     <div class="am-u-sm-10">
                         <fieldset class="am-form-set">
-                            <input type="password" placeholder="设置一个密码吧" id="password1">
-                            <input type="password" placeholder="再输入一遍" id="password2">
+                            <input type="password" placeholder="设置一个密码吧" id="password1" onkeydown = key_login()>
+                            <input type="password" placeholder="再输入一遍" id="password2" onkeydown = key_login()>
                         </fieldset>
                     </div>
                 </div>
@@ -47,6 +47,12 @@
 
 {% block script %}
 <script type="text/javascript">
+
+function key_login() {
+	if (event.keyCode == 13) {
+		login();
+	}
+}
 function show_error(error){
     $("#error_info").text(error);
     $("#error").show();
