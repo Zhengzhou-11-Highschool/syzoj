@@ -8,9 +8,10 @@
         <table class="am-table">
             <thead>
             <tr>
-                <th>比赛</th>
-                <th>开始时间</th>
-                <th>介绍</th>
+                <th><center>比赛名称</center></th>
+                <th><center>开始时间</center></th>
+                <th><center>结束时间</center></th>
+                <th><center>比赛介绍</center></th>
             </tr>
             </thead>
             <tbody>
@@ -25,9 +26,10 @@
                 {% set tag = '<span class="am-badge am-badge-danger">已结束</span>' %}
                 {% endif %}
 
-                <td><a href="{{url_for('contest',contest_id=contest.id)}}">{{contest.title}}</a></td>
-                <td>{{ tool.pretty_time(contest.start_time) }}{{ tag|safe }}</td>
-                <td>{{ contest.information }}</td>
+                <td width = "150" align = "center" ><a href="{{url_for('contest',contest_id=contest.id)}}">{{contest.title}}</a></td>
+                <td width = "180" align = "center" >{{ tool.pretty_time(contest.start_time) }}{{ tag|safe }} </span> </td>
+                <td width = "170" align = "center" >{{ tool.pretty_time(contest.end_time) }}</td>
+                <td align = "center" >{{ contest.information }}</td>
             </tr>
             {% endfor %}
             </tbody>

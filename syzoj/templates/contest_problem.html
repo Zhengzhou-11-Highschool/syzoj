@@ -59,6 +59,13 @@
 </div>
 {% endblock %}
 {% block script %}
+
+<!-- KaTex -->
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/KaTeX/0.3.0/katex.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/KaTeX/0.3.0/katex.min.js"></script>
+<!-- KaTex autoRender -->
+<script src="{{ url_for('static', filename='auto-render.js') }}"></script>
+
 <script src="{{ url_for('static', filename='marked.js') }}"></script>
 <script type="text/javascript">
 function render(tag){

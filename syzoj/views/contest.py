@@ -11,7 +11,7 @@ from .common import need_login, not_have_permission
 
 @oj.route("/contest")
 def contest_list():
-    query = Contest.query.order_by(db.desc(Contest.id))
+    query = Contest.query.order_by(db.desc(Contest.start_time))
 
     def make_url(page, other):
         return url_for("contest_list") + "?" + urlencode({"page": page})

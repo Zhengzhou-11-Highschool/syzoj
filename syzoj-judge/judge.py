@@ -10,7 +10,7 @@ import lorun
 import codecs
 from random import randint
 
-_SYZOJ_URL = "http://localhost"
+_SYZOJ_URL = "http://localhost:8811"
 _DOWNLOAD_TESTDATA_URL = _SYZOJ_URL + "/static/uploads"
 _GET_TASK_URL = _SYZOJ_URL + "/api/waiting_judge"
 _UPLOAD_TASK_URL = _SYZOJ_URL + "/api/update_judge"
