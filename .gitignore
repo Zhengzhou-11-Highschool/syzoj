@@ -1,8 +1,0 @@
-*.pyc
-Include
-Lib
-Scripts
-.idea
-test.db
-*.zip
-.settings
