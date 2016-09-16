@@ -1,3 +1,0 @@
-flask < 1
-flask-sqlalchemy >= 2
-mysql-python
