@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+{% block contest_tab %}am-active{% endblock %}
+{% block body %}
+<div class="am-container am-g">
+    {% if contest %}
+    <h1>修改 {{ contest.title }}</h1>
+    {% set contest_id = contest.id %}
+    {% else %}
+    <h1>新建比赛</h1>
+    {% set contest_id = 0 %}
+    {% endif %}
+    <div class="am-u-sm-12">
+        <form class="am-form" action="{{ url_for('edit_contest',contest_id=contest_id) }}" method="post">
+            <div class="am-form-group">
+                <label>比赛名称</label>
+                <input type="text" name="title" value="{% if contest %}{{ contest.title }}{% endif %}">
+            </div>
+            <div class="am-form-group">
+                <label>试题列表，请用英文逗号(,)隔开题目编号，如：1,3,5</label>
+                <input type="text" name="problems"
+                       value="{% if contest %}{{ contest.problems.replace('|', ',') }}{% endif %}">
+            </div>
+            <div class="am-form-group">
+                <label>比赛介绍</label>
+                <textarea class="" rows="5" id="doc-ta-1" name="information">{% if contest %}{{ contest.information }}{% endif %}</textarea>
+            </div>
+            <div class="am-form-group">
+                <label>开始时间</label>
+                <input type="number" name="start_time" value="{% if contest %}{{ contest.start_time }}{% endif %}">
+            </div>
+            <div class="am-form-group">
+                <label>结束时间</label>
+                <input type="number" name="end_time" value="{% if contest %}{{ contest.end_time }}{% endif %}">
+            </div>
+            <button type="submit" class="am-btn am-btn-primary">提交</button>
+        </form>
+        </form>
+    </div>
+    {% endblock %}

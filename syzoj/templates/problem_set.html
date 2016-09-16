@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class="am-container">
+    <h1>题库</h1>
+    <div class="am-u-sm-12">
+        <table class="am-table">
+            <thead>
+            <tr>
+                <th>编号</th>
+                <th>题目名称</th>
+                <th>通过</th>
+                <th>提交</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% set problems = sorter.get() %}
+            {% for problem in problems %}
+                {% if problem.is_public or problem.is_allowed_edit(user)%}
+                <tr>
+                    <td>{{problem.id}}</td>
+                    <td><a href="{{url_for('problem',problem_id=problem.id)}}">{{problem.title}}{% if problem.is_allowed_edit(user) and not problem.is_public %}--[未审核]{% endif %}</a></td>
+                    <td>{{problem.ac_num}}</td>
+                    <td>{{problem.submit_num}}</td>
+                </tr>
+                {% endif %}
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    </hr>
+    {{sorter.get_html()|safe}}
+</div>
+{% endblock %}

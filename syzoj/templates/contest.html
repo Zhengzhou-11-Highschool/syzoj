@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+{% block contest_tab %} am-active {% endblock %}
+{% block body %}
+<div class="am-container am-g">
+    <h1>{{ contest.title }}</h1>
+
+    <div class="am-u-sm-12">
+        {% if contest.is_allowed_edit(user) or not contest.is_running() %}
+        <a class="am-btn am-btn-success am-btn-sm am-fl"
+           href="{{ url_for('contest_ranklist', contest_id=contest.id) }}">排行榜</a>
+        {% endif %}
+        {% if contest.is_allowed_edit(user) %}
+        <a class="am-btn am-btn-primary am-btn-sm am-fl" href="{{ url_for('edit_contest', contest_id=contest.id) }}">编辑比赛</a>
+        {% endif %}
+    </div>
+    <div class="am-u-sm-12">
+        <div class="am-panel am-panel-default">
+            <div class="am-panel-bd">
+                {{ contest.information }}
+            </div>
+        </div>
+    </div>
+    <div class="am-u-sm-12">
+        <table class="am-table am-table-bordered">
+            <thead>
+            <tr>
+                <th width="20%">提交状态</th>
+                <th width="80%">题目</th>
+            </tr>
+            </thead>
+            {% set problems = contest.get_problems() %}
+            {% set i = 0 %}
+            {% for problem in problems %}
+            <tbody>
+            <tr>
+                <td>{{ info[problem.id] | safe}}</td>
+                <td><a href="{{ url_for('contest_problem', contest_id=contest.id, kth_problem=i)}}">{{ problem.title
+                    }}</a></td>
+            </tr>
+            </tbody>
+            {% set i = i+1 %}
+            {% endfor %}
+        </table>
+    </div>
+</div>
+{% endblock %}

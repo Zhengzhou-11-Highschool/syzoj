@@ -1,0 +1,72 @@
+{% extends "layout.html" %}
+{% block body %}
+<style type="text/css">
+    .am-panel-title{
+    font-size: 1.6em;
+    }
+</style>
+<div class="am-container am-g">
+	{% if article %}
+        {% set article_id=article.id %}
+        <h1>更新文章</h1>
+    {% else %}
+        {% set article_id=0 %}
+        <h1>发表文章</h1>
+    {% endif %}
+    <form class="am-form" method="post" action="{{url_for('edit_article',article_id=article_id)}}">
+        <div data-am-widget="tabs" class="am-tabs am-tabs-d2" data-am-tabs="{noSwipe: 1}">
+            <ul class="am-tabs-nav am-cf">
+                <li class="am-active" id="edit">
+                    <a href="#">编辑</a>
+                </li>
+                <li class="" id="preview">
+                    <a href="#">预览</a>
+                </li>
+            </ul>
+            <div class="am-tabs-bd">
+                <div class="am-tab-panel am-active" id="edit-panel">
+                    <fieldset>
+                        <div class="am-form-group">
+                            <label>文章标题</label>
+                            <input type="text" class="am-form-field" id="title" name="title"
+                                   value="{% if article %}{{article.title}}{% endif %}">
+                        </div>
+
+                        <div class="am-form-group">
+                            <label>内容</label>
+                            <textarea class="" rows="15" id="content" name="content">{% if article %}{{article.content}}{% endif %}</textarea>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <div class="am-tab-panel" id="preview-panel">
+                    <div class="am-panel-hd"><h3 class="am-panel-title" id="pv-title"></h3></div>
+                    <div class="am-panel-bd" id="pv-content"></div>
+                </div>
+            </div>
+        </div>
+        <button type="submit" class="am-btn am-btn-default">提交</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block script %}
+<!-- KaTex -->
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/KaTeX/0.3.0/katex.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/KaTeX/0.3.0/katex.min.js"></script>
+<!-- KaTex autoRender -->
+<script src="{{ url_for('static', filename='auto-render.js') }}"></script>
+
+<script src="{{ url_for('static', filename='marked.js') }}"></script>
+<script type="text/javascript">
+function render(output,input){
+    output.html(marked(input.val()));
+}
+$("#preview").click(function(){
+    $("#pv-title").text($("#title").val());
+    render($("#pv-content"),$("#content"));
+    renderMathInElement(document.getElementById("pv-content"));
+});
+
+</script>
+{% endblock %}

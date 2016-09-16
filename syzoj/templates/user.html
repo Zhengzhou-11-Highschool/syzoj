@@ -1,0 +1,74 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class="am-container am-g">
+	<h1>用户信息</h1>
+	<div class="am-u-sm-8">
+		<div class="am-u-sm-6">
+			<div class="am-panel am-panel-default">
+			 	<div class="am-panel-hd">
+			 		<h3 class="am-panel-title">头像</h3>
+			 	</div>
+			 	<div class="am-panel-bd">
+			 		<img src="{{shown_user.get_gravatar_url(160)}}">
+				</div>
+			</div>
+		</div>
+		<div class="am-u-sm-6">
+			<div class="am-panel am-panel-default">
+			 	<div class="am-panel-hd">
+			   		<h3 class="am-panel-title">用户昵称</h3>
+			 	</div>
+			 	<div class="am-panel-bd">
+					<p>{{shown_user.nickname}}{%if shown_user.nameplate %}{{shown_user.nameplate|safe}}{%endif%}</p>
+				</div>
+	
+			 	<div class="am-panel-hd">
+			   		<h3 class="am-panel-title">用户邮箱</h3>
+			 	</div>
+			 	<div class="am-panel-bd">
+					<p>{{shown_user.email}}</p>
+				</div>
+			</div>
+		</div>
+
+		<div class="am-u-sm-12">
+			<div class="am-panel am-panel-default">
+			 	<div class="am-panel-hd">
+			 		<h3 class="am-panel-title">共发表了{{ articles_num }}篇文章</h3>
+			 	</div>
+				<div class="am-panel-bd">
+					<table class="am-table">
+						<tbody>
+						{% for article in articles %}
+							<tr>
+								<td><a href="{{url_for('article',article_id=article.id)}}">{{article.title}}</a></td>
+								<td>{{tool.pretty_time(article.public_time)}}</td>
+							</tr>
+						{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="am-u-sm-4">
+		<div class="am-panel am-panel-default">
+			 	<div class="am-panel-hd">
+			   		<h3 class="am-panel-title">个性签名</h3>
+			 	</div>
+			 	<div class="am-panel-bd">
+					<p>{%if shown_user.information%}{{shown_user.information}}{%else%}泥萌看什么看，{{shown_user.nickname}}什么都没有说{%endif%}</p>
+				</div>
+			</div>
+		<div class="am-panel am-panel-default">
+			<div class="am-panel-hd">一共通过了{{shown_user.ac_num}}道题</div>
+            {% set ac_problems = shown_user.get_ac_problems() %}
+			<div class="am-panel-bd">
+                {% for pid, title in ac_problems%}
+				<a href="{{url_for('problem',problem_id=pid)}}">{{pid}}</a>
+				{% endfor %}
+	  		</div>
+	  	</div>
+	</div>
+</div>
+{% endblock %}

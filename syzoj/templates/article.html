@@ -1,0 +1,81 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<style type="text/css" xmlns:style="http://www.w3.org/1999/xhtml">
+    .small{
+    font-size: 0.7em;
+    }
+</style>
+<div class="am-container am-g">
+	<div class="am-u-sm-12">
+ 		<h1>{{article.title}}</h1>
+ 		<p class="small"><img src="{{article.user.get_gravatar_url(16)}}">
+ 			<a href="{{url_for('user',user_id=article.user.id)}}">{{article.user.nickname}}</a>
+ 			{% if article.user.nameplate %}{{article.user.nameplate|safe}}{% endif %} 于{{tool.pretty_time(article.public_time)}}发表,{{tool.pretty_time(article.update_time)}}最后更新
+ 			{% if article.is_allowed_edit(user) %}
+            <a class="" href="{{url_for('delete_article',article_id=article.id)}}">删除文章</a>
+        	<a class="am-btn am-btn-success am-btn-sm am-fr" href="{{url_for('edit_article',article_id=article.id)}}">编辑文章</a>
+        	{% endif %}
+ 		</p>
+	</div>
+    <div class="am-u-sm-12">
+	    <div class="am-panel am-panel-default">
+	        <div class="am-panel-bd" id="content">{{article.content}}</div>
+	    </div>
+    </div>
+    <div class="am-u-sm-12">
+        <h4>共{{ comment_num }}条回复</h4>
+        {% set comments = sorter.get() %}
+        {% for comment in comments %}
+        <div class="am-panel am-panel-default am-u-sm-12">
+            <div class="am-panel-bd" style="padding: 0px;margin: 0px;">
+                <div class="am-u-sm-2" style="text-align:center;">
+                    <p class="small" style="display: block;padding: 0px;margin: 0px;">
+                        {{ tool.pretty_time(comment.public_time) }}
+                    </p>
+                    <img src="{{comment.user.get_gravatar_url(80)}}" style="vertical-align:middle">
+                    <p style="display: block;padding: 0px;margin: 0px;"><a href="{{url_for('user',user_id=comment.user.id)}}">{{comment.user.nickname}}</a></p>
+                </div>
+                <div class="am-u-sm-10">{{ comment.content }}</div>
+            </div>
+        </div>
+        {% endfor %}
+        {{ sorter.get_html() | safe }}
+    </div>
+    <hr/>
+    <div class="am-u-sm-12">
+        <form class="am-form" action="{{ url_for('comment_article', article_id=article.id) }}" method="post">
+            <div class="am-form-group">
+                <textarea rows="5" name="comment"></textarea>
+            </div>
+            <button type="submit" class="am-btn am-btn-primary">发表回复</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<!-- KaTex -->
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/KaTeX/0.3.0/katex.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/KaTeX/0.3.0/katex.min.js"></script>
+<!-- KaTex autoRender -->
+<script src="{{ url_for('static', filename='auto-render.js') }}"></script>
+
+<script src="{{ url_for('static', filename='marked.js') }}"></script>
+<script type="text/javascript">
+function render(tag){
+    tag.html(marked(tag.html()));
+}
+marked.setOptions({
+  highlight: function (code) {
+    return "<code>"+code+"</code>";
+  }
+});
+$(document).ready(function(){
+    render($("#content"));
+    $("pre").addClass("prettyprint");
+    prettyPrint();
+    renderMathInElement(document.getElementById("content"));
+});
+</script>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class="am-container am-g">
+    <h1>讨论区</h1>
+    <div class="am-u-sm-12">
+        <a href="{{url_for('edit_article',article_id=0)}}" class="am-btn am-btn-primary am-btn-sm am-fr">发表文章</a>
+        <table class="am-table">
+            <thead>
+            <tr>
+                <th>标题</th>
+                <th>作者</th>
+                <th>发表时间</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% set articles = sorter.get() %}
+            {% for article in articles %}
+                <tr>
+                    <td><a href="{{url_for('article',article_id=article.id)}}">{{article.title}}</a></td>
+                    <td><a href="{{url_for('user',user_id=article.user.id)}}">{{article.user.nickname}}</a></td>
+                    <td>{{tool.pretty_time(article.public_time)}}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    </hr>
+    {{sorter.get_html()|safe}}
+</div>
+{% endblock %}
