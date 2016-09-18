@@ -57,8 +57,8 @@
 {% block script %}
 
 <!-- KaTex -->
-<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/KaTeX/0.3.0/katex.min.css">
-<script src="//cdnjs.cloudflare.com/ajax/libs/KaTeX/0.3.0/katex.min.js"></script>
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.js"></script>
 <!-- KaTex autoRender -->
 <script src="{{ url_for('static', filename='auto-render.js') }}"></script>
 
@@ -81,7 +81,6 @@ $(document).ready(function(){
     renderMathInElement(document.getElementById("problem-panel"));
     $("pre").addClass("prettyprint");
     prettyPrint();
-    //$("#description").html(marked($("#description").html()));
 });
 function public_problem(){
     url='/api/problem/{{problem.id}}/public?session_id='+$.cookie("session_id");
