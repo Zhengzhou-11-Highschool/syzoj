@@ -24,6 +24,10 @@ def contest_list():
 def contest(contest_id):
     contest = Contest.query.filter_by(id=contest_id).first()
     user = User.get_cur_user()
+
+    if not contest.is_running or not contest.is_allowed_edit(user):
+        return not_have_permission()
+
     player = None
     info = {}
     if user: player = contest.players.filter_by(user_id = user.id).first()

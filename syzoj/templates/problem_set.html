@@ -6,6 +6,7 @@
         <table class="am-table">
             <thead>
             <tr>
+                <th width = 50></th>
                 <th>编号</th>
                 <th>题目名称</th>
                 <th>通过</th>
@@ -13,11 +14,19 @@
             </tr>
             </thead>
             <tbody>
+            {% if user %}
+            {% set ac_problem = user.get_ac_problems() %}
+            {% endif %}
             {% set problems = sorter.get() %}
             {% for problem in problems %}
-                {% if problem.is_public or problem.is_allowed_edit(user)%}
+                {% if problem.is_public or problem.is_allowed_edit(user) %}
                 <tr>
-                    <td>{{problem.id}}</td>
+                    {% if user and (problem.id, problem.title) in ac_problem %}
+                    <td width = 50><span class = "am-icon-check am-success"></span></td>
+                    {% else %}
+                    <td width = 50></td>
+                    {% endif %}
+                    <td width = 80>{{problem.id}}</td>
                     <td><a href="{{url_for('problem',problem_id=problem.id)}}">{{problem.title}}{% if problem.is_allowed_edit(user) and not problem.is_public %}--[未审核]{% endif %}</a></td>
                     <td>{{problem.ac_num}}</td>
                     <td>{{problem.submit_num}}</td>
