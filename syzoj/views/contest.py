@@ -25,7 +25,8 @@ def contest(contest_id):
     contest = Contest.query.filter_by(id=contest_id).first()
     user = User.get_cur_user()
 
-    if not contest.is_running or not contest.is_allowed_edit(user):
+    now = time.time()
+    if now < contest.start_time and not contest.is_allowed_edit(user):
         return not_have_permission()
 
     player = None
@@ -50,12 +51,13 @@ def contest(contest_id):
 @oj.route("/contest/<int:contest_id>/<int:kth_problem>")
 def contest_problem(contest_id, kth_problem):
     contest = Contest.query.filter_by(id=contest_id).first()
+    user = User.get_cur_user()
     if not contest:
         abort(404)
 
     now = time.time()
-    if now < contest.start_time:
-        abort(404)
+    if now < contest.start_time and not contest.is_allowed_edit(user):
+        return not_have_permission()
 
     problem = contest.get_problems()[kth_problem]
     if now > contest.end_time:
