@@ -18,13 +18,13 @@
         <table class="am-table">
             <thead>
             <tr>
-                <th>编号</th>
-                <th>题目名称</th>
-                <th>状态</th>
-                <th>分数</th>
-                <th>总时间</th>
-                <th>提交者</th>
-                <th>提交时间</th>
+                <th><center>编号</center></th>
+                <th><center>题目名称</center></th>
+                <th><center>状态</center></th>
+                <th><center>分数</center></th>
+                <th><center>总时间</center></th>
+                <th><center>提交者</center></th>
+                <th><center>提交时间</center></th>
             </tr>
             </thead>
             <tbody>
@@ -32,26 +32,26 @@
                 {% set see_result=judge.is_allowed_see_result(user) %}
                 {% set result=judge.get_result()%}
                 <tr>
-                    <td>{{judge.id}}</td>
-                    <td><a href="{{url_for('problem',problem_id=judge.problem.id)}}">{{judge.problem.title}}</a></td>
+                    <td><center>{{judge.id}}</center></td>
+                    <td><center><a href="{{url_for('problem',problem_id=judge.problem.id)}}">{{judge.problem.title}}</a></center></td>
                     {% if see_result %}
                     
-                    <td>{{judge.status}}</td>
+                    <td><center>{{judge.status}}</center></td>
 
                     {% if judge.is_allowed_see_code(user) %}
-                    <td><a href="{{url_for('judge_detail',judge_id=judge.id)}}">{{result["score"]}}</a></td>
+                    <td><center><a href="{{url_for('judge_detail',judge_id=judge.id)}}">{{result["score"]}}</a></center></td>
                     {% else %}
-                    <td>{{result["score"]}}</td>
+                    <td><center>{{result["score"]}}</center></td>
                     {% endif %}
 
-                    <td>{{result["total_time"]}}</td>
+                    <td><center>{{result["total_time"]}}</center></td>
                     {% else %}
-                    <td>隐藏</td>
-                    <td>隐藏</td>
-                    <td>隐藏</td>
+                    <td><center>隐藏</center></td>
+                    <td><center>隐藏</center></td>
+                    <td><center>隐藏</center></td>
                     {% endif %}
-                    <td><a href="{{url_for('user',user_id=judge.user.id)}}">{{judge.user.nickname}}</a></td>
-                    <td>{{tool.pretty_time(judge.submit_time)}}</td>
+                    <td><center><a href="{{url_for('user',user_id=judge.user.id)}}">{{judge.user.nickname}}</a></center></td>
+                    <td><center>{{tool.pretty_time(judge.submit_time)}}</center></td>
                 </tr>
             {% endfor %}
             </tbody>

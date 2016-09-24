@@ -12,10 +12,10 @@
 	    <table class="am-table">
 	        <thead>
 	        <tr>
-	            <th>排名</th>
-	            <th>用户昵称</th>
-	            <th>个性签名</th>
-	            <th>通过数量</th>
+	            <th><center>排名</center></th>
+	            <th><center>用户昵称</center></th>
+	            <th><center>个性签名</center></th>
+	            <th><center>通过数量</center></th>
 	        </tr>
 	        </thead>
 	        <tbody>
@@ -23,10 +23,10 @@
             {% set users = sorter.get() %}
 	        {% for user in users%}
 		        <tr>
-		        	<td>{{rank}}</td> {%set rank=rank+1%}
-		        	<td><a href="{{url_for('user',user_id=user.id)}}">{{user.nickname}}</a>{% if user.nameplate %}{{user.nameplate|safe}}{% endif %}</td>
-		        	<td>{% if user.information%}{{user.information}}{%endif%}</td>
-		        	<td>{{user.ac_num}}</td>
+		        	<td width = 8 align = "center" >{{rank}}</td> {%set rank=rank+1%}
+		        	<td width = 80 align = "center" ><a href="{{url_for('user',user_id=user.id)}}">{{user.nickname}}</a>{% if user.nameplate %}{{user.nameplate|safe}}{% endif %}</td>
+		        	<td width = 380>{% if user.information%}{{user.information}}{%endif%}</td>
+		        	<td width = 8 align = "center" >{{user.ac_num}}</td>
 		        </tr>
 		     {% endfor %}
 	        </tbody>

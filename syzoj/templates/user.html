@@ -62,10 +62,12 @@
 			</div>
 		<div class="am-panel am-panel-default">
 			<div class="am-panel-hd">一共通过了{{shown_user.ac_num}}道题</div>
-            {% set ac_problems = shown_user.get_ac_problems() %}
+            {% set submitted_problems = shown_user.get_submitted_problems() %}
 			<div class="am-panel-bd">
-                {% for pid, title in ac_problems%}
-				<a href="{{url_for('problem',problem_id=pid)}}">{{pid}}</a>
+                {% for key in submitted_problems.keys() %}
+                {% if submitted_problems[key][0] == True %}
+				<a href="{{url_for('problem',problem_id=key)}}">{{key}}</a>
+				{% endif %}
 				{% endfor %}
 	  		</div>
 	  	</div>

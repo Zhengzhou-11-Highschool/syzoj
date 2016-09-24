@@ -6,30 +6,34 @@
         <table class="am-table">
             <thead>
             <tr>
-                <th width = 50></th>
-                <th>编号</th>
+                <th width = 30><center></center></th>
+                <th><center>编号</center></th>
                 <th>题目名称</th>
-                <th>通过</th>
-                <th>提交</th>
+                <th><center>通过</center></th>
+                <th><center>提交</center></th>
             </tr>
             </thead>
             <tbody>
             {% if user %}
-            {% set ac_problem = user.get_ac_problems() %}
+            {% set submitted_problem = user.get_submitted_problems() %}
             {% endif %}
             {% set problems = sorter.get() %}
             {% for problem in problems %}
                 {% if problem.is_public or problem.is_allowed_edit(user) %}
                 <tr>
-                    {% if user and (problem.id, problem.title) in ac_problem %}
-                    <td width = 50><span class = "am-icon-check am-success"></span></td>
+                    {% if user and submitted_problem.has_key(problem.id) %}
+                    {% if submitted_problem[problem.id][0] == True %}
+                    <td width = 30><center><a href="{{url_for('judge_detail', judge_id = submitted_problem[problem.id][1])}}"><span class = "am-icon-check am-success"></span></center></td>
                     {% else %}
-                    <td width = 50></td>
+                    <td width = 30><center><a href="{{url_for('judge_detail', judge_id = submitted_problem[problem.id][1])}}"><span class = "am-icon-close am-warning"></span></center></a></td>
                     {% endif %}
-                    <td width = 80>{{problem.id}}</td>
+                    {% else %}
+                    <td width = 30><center></center></td>
+                    {% endif %}
+                    <td width = 60><center>{{problem.id}}</center></td>
                     <td><a href="{{url_for('problem',problem_id=problem.id)}}">{{problem.title}}{% if problem.is_allowed_edit(user) and not problem.is_public %}--[未审核]{% endif %}</a></td>
-                    <td>{{problem.ac_num}}</td>
-                    <td>{{problem.submit_num}}</td>
+                    <td width = 80><center>{{problem.ac_num}}</center></td>
+                    <td width = 80><center>{{problem.submit_num}}</center></td>
                 </tr>
                 {% endif %}
             {% endfor %}

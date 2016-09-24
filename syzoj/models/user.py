@@ -97,13 +97,13 @@ class User(db.Model):
                 ac_problems.add(judge.problem_id)
         self.ac_num = len(ac_problems)
 
-    def get_ac_problems(self):
-        ac_problems = set()
-        for judge in self.submit.filter_by(status="Accepted").all():
-            if judge.is_allowed_see_result(None) and judge.status == "Accepted":
-                problem = Problem.query.filter_by(id=judge.problem_id).first()
-                ac_problems.add((judge.problem_id, problem.title))
-        return tuple(ac_problems)
+    def get_submitted_problems(self):
+        submitted_problems = dict()
+        for ac_info in UserAcProblem.query.filter_by(user_id = self.id).all():
+            problem = Problem.query.filter_by(id = ac_info.problem_id).first()
+            submitted_problems[ac_info.problem_id] = [ac_info.is_accepted, ac_info.judge_id]
+        print submitted_problems
+        return submitted_problems
 
     @staticmethod
     def get_cur_user(session_id=None):
@@ -126,3 +126,30 @@ class User(db.Model):
             return User.query.filter_by(nickname=nickname).first()
 
         return None
+
+
+class UserAcProblem(db.Model):
+    __tablename__ = 'UserAcProblem'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, index = True)
+    problem_id = db.Column(db.Integer)
+    is_accepted = db.Column(db.BOOLEAN)
+    judge_id = db.Column(db.Integer)
+
+    def __int__(self, user_id, problem_id, judge_id):
+        self.user_id = user_id
+        self.problem_id = problem_id
+        self.is_accepted = False
+        self.judge_id = judge_id
+    
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
+	    
+	        
+

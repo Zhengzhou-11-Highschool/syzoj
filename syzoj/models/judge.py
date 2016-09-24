@@ -1,5 +1,6 @@
 from syzoj import db
 from syzoj.models.contest import Contest
+from syzoj.models.user import UserAcProblem
 import json
 import time
 
@@ -118,6 +119,32 @@ class JudgeState(db.Model):
         elif self.type == 1:
             contest = Contest.query.filter_by(id=self.type_info).first()
             contest.new_submission(self)
+    
+    def update_userac_info(self):
+        if self.type == 0:
+            all_user_ac = UserAcProblem.query.filter_by(user_id = self.user.id).all()
+            for ac_info in all_user_ac:
+                if ac_info.problem_id == self.problem.id:
+                    if ac_info.is_accepted and self.status != "Accepted":
+                        return
+                        
+                    new_ac_info = UserAcProblem(user_id = ac_info.user_id, problem_id = ac_info.problem_id, judge_id = self.id)
+                    ac_info.delete()
+                    
+                    if self.status == "Accepted":
+                        new_ac_info.is_accepted = True
+                    else:
+                        new_ac_info.is_accepted = False
+                    new_ac_info.save()
+                    return
+            
+            new_ac_info = UserAcProblem(user_id = self.user.id, problem_id = self.problem.id, judge_id = self.id)
+            if self.status == "Accepted":
+                new_ac_info.is_accepted = True
+            else:
+                new_ac_info.is_accepted = False
+            new_ac_info.save()
+            return
 
 
 class WaitingJudge(db.Model):
