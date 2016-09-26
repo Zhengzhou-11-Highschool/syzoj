@@ -234,7 +234,6 @@ def main():
         except:
             result = {"status": "System Error", "score": 0, "total_time": 0, "max_memory": 0, "case_num": 0}
 
-        print result
         upload_judge_result(result, task["judge_id"])
 
 

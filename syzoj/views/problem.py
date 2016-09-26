@@ -1,3 +1,7 @@
+import sys
+reload(sys)
+sys.setdefaultencoding("utf8")
+
 from urllib import urlencode
 
 from flask import jsonify, redirect, url_for, abort, request, render_template
@@ -11,12 +15,19 @@ from .common import need_login, not_have_permission, show_error
 @oj.route("/problem")
 def problem_set():
     query = Problem.query
+    problem_title = request.args.get("problem_title")
+    
+    if request.args.get("problem_title"):
+        query = query.filter(Problem.title.like((u"%" + problem_title + u"%")))
 
     def make_url(page, other):
-        return url_for("problem_set") + "?" + urlencode({"page": page})
+        other["page"] = page
+        return url_for("problem_set") + "?" + urlencode(other)
 
-    sorter = Paginate(query, make_url=make_url, cur_page=request.args.get("page"), edge_display_num=50, per_page=50)
-    return render_template("problem_set.html", tool=Tools, tab="problem_set", sorter=sorter)
+    sorter = Paginate(query, make_url=make_url, other={"problem_title": problem_title},
+            cur_page=request.args.get("page"), edge_display_num=50, per_page=50)
+            
+    return render_template("problem_set.html", tool=Tools, tab="problem_set", sorter=sorter, problems=sorter.get())
 
 
 @oj.route("/problem/<int:problem_id>")

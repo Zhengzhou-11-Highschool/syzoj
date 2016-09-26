@@ -14,7 +14,7 @@
 	        <tr>
 	            <th><center>排名</center></th>
 	            <th><center>用户昵称</center></th>
-	            <th><center>个性签名</center></th>
+	            <th>个性签名</th>
 	            <th><center>通过数量</center></th>
 	        </tr>
 	        </thead>
@@ -23,10 +23,10 @@
             {% set users = sorter.get() %}
 	        {% for user in users%}
 		        <tr>
-		        	<td width = 8 align = "center" >{{rank}}</td> {%set rank=rank+1%}
-		        	<td width = 80 align = "center" ><a href="{{url_for('user',user_id=user.id)}}">{{user.nickname}}</a>{% if user.nameplate %}{{user.nameplate|safe}}{% endif %}</td>
-		        	<td width = 380>{% if user.information%}{{user.information}}{%endif%}</td>
-		        	<td width = 8 align = "center" >{{user.ac_num}}</td>
+		        	<td width = 50 align = "center" >{{rank}}</td> {%set rank=rank+1%}
+		        	<td width = 100 align = "center" ><a href="{{url_for('user',user_id=user.id)}}">{{user.nickname}}</a>{% if user.nameplate %}{{user.nameplate|safe}}{% endif %}</td>
+		        	<td>{% if user.information%}{{user.information}}{%endif%}</td>
+		        	<td width = 80 align = "center" >{{user.ac_num}}</td>
 		        </tr>
 		     {% endfor %}
 	        </tbody>

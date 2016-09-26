@@ -2,6 +2,12 @@
 {% block body %}
 <div class="am-container">
     <h1>题库</h1>
+    <form class="am-form-inline am-u-sm-8 " role="form" method="get" action="{{url_for('problem_set')}}">
+        <div class="am-form-group am-fl">
+            <input type="text" class="am-form-field am-input-sm" name="problem_title" placeholder="题目关键字", value="{% if problem_title %}{{problem_title}}{% endif %}">
+        </div>
+        <button type="submit" class="am-btn am-btn-primary am-input-sm am-fl">搜索</button>
+    </form>
     <div class="am-u-sm-12">
         <table class="am-table">
             <thead>
@@ -17,7 +23,6 @@
             {% if user %}
             {% set submitted_problem = user.get_submitted_problems() %}
             {% endif %}
-            {% set problems = sorter.get() %}
             {% for problem in problems %}
                 {% if problem.is_public or problem.is_allowed_edit(user) %}
                 <tr>

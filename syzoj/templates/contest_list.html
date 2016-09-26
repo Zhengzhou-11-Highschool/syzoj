@@ -29,7 +29,7 @@
                 <td width = "150" align = "center" ><a href="{{url_for('contest',contest_id=contest.id)}}">{{contest.title}}</a></td>
                 <td width = "180" align = "center" >{{ tool.pretty_time(contest.start_time) }}{{ tag|safe }} </span> </td>
                 <td width = "170" align = "center" >{{ tool.pretty_time(contest.end_time) }}</td>
-                <td align = "center" >{{ contest.information }}</td>
+                <td>{{ contest.information }}</td>
             </tr>
             {% endfor %}
             </tbody>

@@ -8,16 +8,16 @@
         <table class="am-table">
             <thead>
             <tr>
-                <th>#</th>
-                <th>用户昵称</th>
+                <th><center>#</center></th>
+                <th><center>用户昵称</center></th>
                 {% set problems = contest.get_problems() %}
                 {% set i = 0 %}
                 {% for problem in problems %}
-                <th><a href="{{ url_for('contest_problem', contest_id=contest.id, kth_problem=i) }}">{{ problem.title
-                    }}</a></th>
+                <th><center><a href="{{ url_for('contest_problem', contest_id=contest.id, kth_problem=i) }}">{{ problem.title
+                    }}</a></center></th>
                 {% set i = i + 1 %}
                 {% endfor %}
-                <th>总分</th>
+                <th><center>总分</center></th>
             </tr>
             </thead>
             <tbody>
