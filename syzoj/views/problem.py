@@ -19,13 +19,15 @@ def problem_set():
     
     if request.args.get("problem_title"):
         query = query.filter(Problem.title.like((u"%" + problem_title + u"%")))
+    else:
+        problem_title = ''
 
     def make_url(page, other):
         other["page"] = page
         return url_for("problem_set") + "?" + urlencode(other)
-
+        
     sorter = Paginate(query, make_url=make_url, other={"problem_title": problem_title},
-            cur_page=request.args.get("page"), edge_display_num=50, per_page=50)
+            cur_page=request.args.get("page"), edge_display_num=50, per_page=50
             
     return render_template("problem_set.html", tool=Tools, tab="problem_set", sorter=sorter, problems=sorter.get())
 
