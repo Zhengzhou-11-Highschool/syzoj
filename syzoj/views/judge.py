@@ -113,8 +113,8 @@ def update_judge_info(judge_id):
         abort(404)
 
     judge.update_result(json.loads(request.form["result"]))
-    judge.update_related_info()
     judge.update_userac_info()
+    judge.update_related_info()
     judge.save()
     
     return jsonify({"return": 0})

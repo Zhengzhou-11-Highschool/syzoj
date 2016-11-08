@@ -22,7 +22,7 @@ class JudgeState(db.Model):
 
     submit_time = db.Column(db.Integer)  # googbye at 2038-1-19
 
-    # "type" indicate it's contest's submission(type = 0) or normal submission(type = 1)
+    # "type" indicate it's contest's submission(type = 1) or normal submission(type = 0)
     # type=2: this is a test submission
     # if it's contest's submission (type = 1), the type_info is contest_id
     # use this way represent because it's easy to expand
@@ -59,6 +59,8 @@ class JudgeState(db.Model):
             return True
 
         if self.type == 0:
+            if not self.problem.is_public:
+                return False
             return True
         elif self.type == 1:
             contest = Contest.query.filter_by(id=self.type_info).first()
@@ -79,8 +81,10 @@ class JudgeState(db.Model):
             return True
         if user and user.id == self.problem.user.id:
             return True
-
+            
         if self.type == 0:
+            if not self.problem.is_public:
+                return False
             return True
         elif self.type == 1:
             contest = Contest.query.filter_by(id=self.type_info).first()
@@ -120,6 +124,7 @@ class JudgeState(db.Model):
             contest = Contest.query.filter_by(id=self.type_info).first()
             contest.new_submission(self)
     
+    # only normal submittion is counted
     def update_userac_info(self):
         if self.type == 0:
             all_user_ac = UserAcProblem.query.filter_by(user_id = self.user.id).all()

@@ -89,21 +89,18 @@ class User(db.Model):
             return True
         return False
 
-    def refresh_submit_info(self):
-        ac_problems = set()
-        self.submit_num = self.submit.count()
-        for judge in self.submit.all():
-            if judge.is_allowed_see_result(None) and judge.status == "Accepted":
-                ac_problems.add(judge.problem_id)
-        self.ac_num = len(ac_problems)
-
     def get_submitted_problems(self):
         submitted_problems = dict()
         for ac_info in UserAcProblem.query.filter_by(user_id = self.id).all():
-            problem = Problem.query.filter_by(id = ac_info.problem_id).first()
             submitted_problems[ac_info.problem_id] = [ac_info.is_accepted, ac_info.judge_id]
-        print submitted_problems
         return submitted_problems
+
+    def refresh_submit_info(self):
+        cnt = 0
+        for ac_info in UserAcProblem.query.filter_by(user_id = self.id).all():
+            if ac_info.is_accepted:
+                cnt += 1
+        self.ac_num = cnt
 
     @staticmethod
     def get_cur_user(session_id=None):
@@ -136,7 +133,7 @@ class UserAcProblem(db.Model):
     is_accepted = db.Column(db.BOOLEAN)
     judge_id = db.Column(db.Integer)
 
-    def __int__(self, user_id, problem_id, judge_id):
+    def __init__(self, user_id, problem_id, judge_id):
         self.user_id = user_id
         self.problem_id = problem_id
         self.is_accepted = False
@@ -150,6 +147,7 @@ class UserAcProblem(db.Model):
         db.session.delete(self)
         db.session.commit()
 
-	    
-	        
+
+
+
 
