@@ -88,6 +88,8 @@ def edit_contest(contest_id):
     contest = Contest.query.filter_by(id=contest_id).first()
     if contest and not contest.is_allowed_edit(user):
         return not_have_permission()
+    elif not (user.have_privilege(4) or user.have_privilege(5)):
+        return not_have_permission()
 
     if request.method == "POST":
         if not contest:

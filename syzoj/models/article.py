@@ -69,7 +69,7 @@ class Article(db.Model):
             return False
         if user.id == self.user_id:
             return True
-        if user.is_admin:
+        if user.have_privilege(6):
             return True
         return False
 

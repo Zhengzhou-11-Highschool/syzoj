@@ -10,7 +10,7 @@
 </style>
 <div class="am-container am-g">
     <div class="am-u-sm-12 problem-header">
-        <h1>{{problem.title}}{% if problem.is_allowed_edit(user) and not problem.is_public %}--[未审核]{% endif %}</h1>
+        <h1>{{problem.title}}{% if not problem.is_public %}--[未审核]{% endif %}</h1>
 
         <p>
             <span class="am-badge am-badge-success am-text-sm">内存限制: {{problem.memory_limit}} MB</span>
@@ -25,7 +25,7 @@
         <a class="am-btn am-btn-secondary am-btn-sm am-fl" href="{{url_for('upload_testdata',problem_id=problem.id)}}">上传测试数据</a>
         {% endif %}
 
-        {% if user.is_admin %}
+        {% if user.have_privilege(2) %}
             {% if problem.is_public %}
             <button class="am-btn am-btn-default am-btn-sm am-fr" id="dis_public">取消审核</button>
             {%else%}

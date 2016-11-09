@@ -130,7 +130,7 @@ class Contest(db.Model):
         db.session.commit()
 
     def is_allowed_edit(self, user=None):
-        if user and user.is_admin:
+        if user and user.have_privilege(4):
             return True
         if user and user.id == self.holder.id:
             return True

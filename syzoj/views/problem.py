@@ -105,7 +105,7 @@ def change_public_attr(problem_id):
     session_id = request.args.get('session_id')
     user = User.get_cur_user(session_id=session_id)
     problem = Problem.query.filter_by(id=problem_id).first()
-    if problem and user and user.is_admin:
+    if problem and user and user.have_privilege(2):
         if request.method == "POST":
             problem.is_public = True
         elif request.method == "DELETE":

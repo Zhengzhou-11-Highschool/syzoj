@@ -45,6 +45,34 @@ class Session(db.Model):
             return False
 
 
+class UserPrivilege(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    user_id = db.Column(db.Integer, index = True)
+    privilege_type = db.Column(db.Integer)
+    '''
+    1 administator
+    2 problem manager
+    3 view all problem
+    4 contest manager
+    5 contest builder
+    6 article manager
+    7 user manager
+    8 data download
+    '''
+    
+    def __init__(self, user_id, privilege_type):
+        self.user_id = user_id
+        self.privilege_type = privilege_type
+        
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
+
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, index=True)
@@ -82,10 +110,16 @@ class User(db.Model):
         db.session.add(self)
         db.session.commit()
 
+    def have_privilege(self, privilege_type):
+        for privilege in UserPrivilege.query.filter_by(user_id = self.id).all():
+            if privilege.privilege_type == privilege_type or privilege.privilege_type == 1:
+                return True
+        return False
+
     def is_allowed_edit(self, user):
         if not user:
             return False
-        if self.id == user.id or user.is_admin:
+        if self.id == user.id or user.have_privilege(7):
             return True
         return False
 
@@ -123,11 +157,25 @@ class User(db.Model):
             return User.query.filter_by(nickname=nickname).first()
 
         return None
-
+        
+    def give_privilege(self, privilege_type):
+        for privilege in UserPrivilege.query.filter_by(user_id = self.id).all():
+            if privilege.privilege_type == privilege_type:
+                return False # User already had privilege
+        new_privilege = UserPrivilege(user_id = self.id, privilege_type = privilege_type)
+        new_privilege.save()
+        return True
+        
+    def del_privilege(self, privilege_type):
+        for privilege in UserPrivilege.query.filter_by(user_id = self.id).all():
+            if privilege.privilege_type == privilege_type:
+                privilege.delete()
+                return True
+        return False # User doesnt have privilege
 
 class UserAcProblem(db.Model):
     __tablename__ = 'UserAcProblem'
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key = True)
     user_id = db.Column(db.Integer, index = True)
     problem_id = db.Column(db.Integer)
     is_accepted = db.Column(db.BOOLEAN)
@@ -147,7 +195,5 @@ class UserAcProblem(db.Model):
         db.session.delete(self)
         db.session.commit()
 
-
-
-
+        
 

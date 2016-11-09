@@ -27,10 +27,10 @@
 		    <div class="am-form-group">
 		    	<label class="am-u-sm-2 am-form-label">个性签名</label>
 		    	<div class="am-u-sm-10">
-		    		<textarea rows="5" name="information">{%if edited_user.information%}{{edited_user.information}}{%else%}泥萌看什么看，{{edited_user.nickname}}什么都没有说{%endif%}</textarea>
+		    		<textarea rows="5" name="information">{% if edited_user.information %}{{edited_user.information}}{%else%}泥萌看什么看，{{edited_user.nickname}}什么都没有说{%endif%}</textarea>
 		    	</div>
-		    </div>
-           <div class="am-form-group">
+            </div>
+            <div class="am-form-group">
                 <label class="am-u-sm-2 am-form-label">修改密码</label>
                 <div class="am-u-sm-10">
                     <fieldset class="am-form-set">
@@ -40,6 +40,18 @@
                     </fieldset>
                 </div>
             </div>
+            {% if user.have_privilege(1) %}
+            <div class="am-form-group">
+		    	<label class="am-u-sm-2 am-form-label">修改权限</label>
+                <label class="am-checkbox-inline"><input type="checkbox" name="prb_mng" value="cyszsd" {% if edited_user.have_privilege(2) %}checked{% endif %}> 题目管理 </label>
+                <label class="am-checkbox-inline"><input type="checkbox" name="vwa_prb" value="cyszsd" {% if edited_user.have_privilege(3) %}checked{% endif %}> 浏览权限 </label>
+                <label class="am-checkbox-inline"><input type="checkbox" name="cts_mng" value="cyszsd" {% if edited_user.have_privilege(4) %}checked{% endif %}> 比赛管理 </label>
+                <label class="am-checkbox-inline"><input type="checkbox" name="cts_bld" value="cyszsd" {% if edited_user.have_privilege(5) %}checked{% endif %}> 比赛创建 </label>
+                <label class="am-checkbox-inline"><input type="checkbox" name="atc_mng" value="cyszsd" {% if edited_user.have_privilege(6) %}checked{% endif %}> 文章管理 </label>
+                <label class="am-checkbox-inline"><input type="checkbox" name="usr_mng" value="cyszsd" {% if edited_user.have_privilege(7) %}checked{% endif %}> 用户管理 </label>
+                <label class="am-checkbox-inline"><input type="checkbox" name="dat_dld" value="cyszsd" {% if edited_user.have_privilege(8) %}checked{% endif %}> 下载数据 </label>
+            </div>
+            {% endif %}
             <div class="am-form-group">
                 <div class="am-u-sm-10 am-u-sm-offset-2">
                     <button class="am-btn am-btn-default">修改</button>

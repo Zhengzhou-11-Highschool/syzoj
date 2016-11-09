@@ -24,7 +24,7 @@
             {% set submitted_problem = user.get_submitted_problems() %}
             {% endif %}
             {% for problem in problems %}
-                {% if problem.is_public or problem.is_allowed_edit(user) %}
+                {% if problem.is_allowed_use(user) %}
                 <tr>
                     {% if user and submitted_problem.has_key(problem.id) %}
                     {% if submitted_problem[problem.id][0] == True %}
@@ -36,7 +36,7 @@
                     <td width = 30><center></center></td>
                     {% endif %}
                     <td width = 60><center>{{problem.id}}</center></td>
-                    <td><a href="{{url_for('problem',problem_id=problem.id)}}">{{problem.title}}{% if problem.is_allowed_edit(user) and not problem.is_public %}--[未审核]{% endif %}</a></td>
+                    <td><a href="{{url_for('problem',problem_id=problem.id)}}">{{problem.title}}{% if not problem.is_public %}--[未审核]{% endif %}</a></td>
                     <td width = 80><center>{{problem.ac_num}}</center></td>
                     <td width = 80><center>{{problem.submit_num}}</center></td>
                 </tr>

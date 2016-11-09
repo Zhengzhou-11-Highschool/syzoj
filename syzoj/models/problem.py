@@ -78,7 +78,7 @@ class Problem(db.Model):
     def is_allowed_edit(self, user=None):
         if not user:
             return False
-        if self.user_id == user.id or user.is_admin:
+        if self.user_id == user.id or user.have_privilege(2):
             return True
         return False
 
@@ -87,7 +87,7 @@ class Problem(db.Model):
             return True
         if not user:
             return False
-        if self.user_id == user.id or user.is_admin:
+        if self.user_id == user.id or user.have_privilege(3) or user.have_privilege(2):
             return True
         return False
 

@@ -53,23 +53,25 @@ class JudgeState(db.Model):
         db.session.commit()
 
     def is_allowed_see_result(self, user=None):
-        if user and user.is_admin:
-            return True
         if user and user.id == self.problem.user.id:
             return True
 
         if self.type == 0:
             if not self.problem.is_public:
+                if user and (user.have_privilege(2) or user.have_privilege(3)):
+                    return True
                 return False
             return True
         elif self.type == 1:
+            if user and user.have_privilege(4):
+                return True
             contest = Contest.query.filter_by(id=self.type_info).first()
             if contest.is_running():
                 return False
             else:
                 return True
         elif self.type == 2:
-            if user and self.user == user.id:
+            if user and (user.have_privilege(2) or user.have_privilege(3) or self.user == user.id):
                 return True
             else:
                 return False
@@ -77,16 +79,18 @@ class JudgeState(db.Model):
         return False
 
     def is_allowed_see_code(self, user=None):
-        if user and user.is_admin:
-            return True
         if user and user.id == self.problem.user.id:
             return True
             
         if self.type == 0:
             if not self.problem.is_public:
+                if user and (user.have_privilege(2) or user.have_privilege(3)):
+                    return True
                 return False
             return True
         elif self.type == 1:
+            if user and user.have_privilege(4):
+                return True
             contest = Contest.query.filter_by(id=self.type_info).first()
             if contest.is_running():
                 if user and self.user == user:
@@ -96,7 +100,7 @@ class JudgeState(db.Model):
             else:
                 return True
         elif self.type == 2:
-            if user and self.user == user.id:
+            if user and (user.have_privilege(2) or user.have_privilege(3) or self.user == user.id):
                 return True
             else:
                 return False

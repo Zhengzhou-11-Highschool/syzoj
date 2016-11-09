@@ -35,6 +35,35 @@ def edit_user(user_id):
         information = request.form.get("information")
         old_password = request.form.get("old_password")
         new_password = request.form.get("new_password")
+        if user.have_privilege(1):
+            if request.form.get("prb_mng"):
+                edited_user.give_privilege(2)
+            else:
+                edited_user.del_privilege(2)
+            if request.form.get("vwa_prb"):
+                edited_user.give_privilege(3)
+            else:
+                edited_user.del_privilege(3)
+            if request.form.get("cts_mng"):
+                edited_user.give_privilege(4)
+            else:
+                edited_user.del_privilege(4)
+            if request.form.get("cts_bld"):
+                edited_user.give_privilege(5)
+            else:
+                edited_user.del_privilege(5)
+            if request.form.get("atc_mng"):
+                edited_user.give_privilege(6)
+            else:
+                edited_user.del_privilege(6)
+            if request.form.get("usr_mng"):
+                edited_user.give_privilege(7)
+            else:
+                edited_user.del_privilege(7)
+            if request.form.get("dat_dld"):
+                edited_user.give_privilege(8)
+            else:
+                edited_user.del_privilege(8)
 
         status = 1
         if not Checker.is_valid_email(email):
