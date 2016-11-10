@@ -40,7 +40,9 @@
                     </fieldset>
                 </div>
             </div>
-            {% if user.have_privilege(1) %}
+            {% if user and not user.have_privilege(1) %}
+            <fieldset disabled>
+            {% endif %}
             <div class="am-form-group">
 		    	<label class="am-u-sm-2 am-form-label">修改权限</label>
                 <label class="am-checkbox-inline"><input type="checkbox" name="prb_mng" value="cyszsd" {% if edited_user.have_privilege(2) %}checked{% endif %}> 题目管理 </label>
@@ -51,6 +53,8 @@
                 <label class="am-checkbox-inline"><input type="checkbox" name="usr_mng" value="cyszsd" {% if edited_user.have_privilege(7) %}checked{% endif %}> 用户管理 </label>
                 <label class="am-checkbox-inline"><input type="checkbox" name="dat_dld" value="cyszsd" {% if edited_user.have_privilege(8) %}checked{% endif %}> 下载数据 </label>
             </div>
+            {% if user and not user.have_privilege(1) %}
+            </fieldset>
             {% endif %}
             <div class="am-form-group">
                 <div class="am-u-sm-10 am-u-sm-offset-2">

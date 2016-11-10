@@ -25,7 +25,7 @@
         <a class="am-btn am-btn-secondary am-btn-sm am-fl" href="{{url_for('upload_testdata',problem_id=problem.id)}}">上传测试数据</a>
         {% endif %}
 
-        {% if user.have_privilege(2) %}
+        {% if user and user.have_privilege(2) %}
             {% if problem.is_public %}
             <button class="am-btn am-btn-default am-btn-sm am-fr" id="dis_public">取消审核</button>
             {%else%}

@@ -84,7 +84,8 @@ def delete_article(article_id):
         if article and article.is_allowed_edit(user) == False:
             return not_have_permission()
 
-        article.delete()
+        if article:
+            article.delete()
         return redirect(url_for("discussion"))
     else:
         return render_template("delete_article.html", tool = Tools, user=user, article=article)
