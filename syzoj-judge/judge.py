@@ -8,6 +8,7 @@ import urllib2
 import json
 import lorun
 import codecs
+import subprocess
 from random import randint
 
 _SYZOJ_URL = "http://localhost:8811"
@@ -31,13 +32,13 @@ def compile_src(source, des):
 
     if os.path.isfile(des):
         os.remove(des)
-    os.system("g++ " + source_file + " -o " + exe_file + " -lm -DONLINE_JUDGE")
+    output = subprocess.check_output("g++ " + source_file + " -o " + exe_file + " -O2 -lm -DONLINE_JUDGE || true", shell=True, stderr=subprocess.STDOUT)
     os.remove(source_file)
 
     if os.path.isfile(des):
-        return True
+        return True, output
     else:
-        return False
+        return False, output
 
 
 def format_ans(s):
@@ -182,12 +183,13 @@ def run(exe_file, std_in, std_out, time_limit, memory_limit):
 
 
 def judge(source, time_limit, memory_limit, testdata):
-    result = {"status": "Judging", "score": 0, "total_time": 0, "max_memory": 0, "case_num": 0}
+    result = {"status": "Judging", "score": 0, "total_time": 0, "max_memory": 0, "case_num": 0, "compiler_output": ""}
 
     testdata_dir = get_testdata_dir(testdata)
     exe_file = "tmp_exe"
 
-    if not compile_src(source, exe_file):
+    compile_success, result["compiler_output"] = compile_src(source, exe_file)
+    if not compile_success:
         result["status"] = "Compile Error"
         return result
 
