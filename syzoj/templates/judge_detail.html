@@ -44,6 +44,11 @@
         {% endif %}
     </div>
     {% if see_code and see_result%}
+    {% if result["status"] == "Compile Error" and result["compiler_output"] %}
+    <div class="am-u-sm-12">
+        <pre><code>{{result["compiler_output"]}}</code></pre>
+    </div>
+    {% else %}
     <div class="am-u-sm-12">
         <section class="am-accordion am-accordion-default">
             {% for i in range(result["case_num"]) %}
@@ -66,6 +71,7 @@
         {% endfor %}
         </section>
     </div>
+    {% endif %}
     {% endif %}
 </div>
 {% endblock %}
