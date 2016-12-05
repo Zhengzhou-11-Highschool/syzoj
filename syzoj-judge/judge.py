@@ -6,7 +6,7 @@ import zipfile
 import urllib
 import urllib2
 import json
-import lorun
+import TJudger
 import codecs
 import subprocess
 from random import randint
@@ -21,51 +21,7 @@ _TESTDATA_DIR = os.path.join(_BASE_DIR, "testdata")
 
 if not os.path.isdir(_TESTDATA_DIR):
     os.mkdir(_TESTDATA_DIR)
-
-
-def compile_src(source, des):
-    source_file = des + "_tmp.cpp"
-    exe_file = des
-
-    with codecs.open(source_file, "w", "utf-8") as f:
-        f.write(source)
-
-    if os.path.isfile(des):
-        os.remove(des)
-    output = subprocess.check_output("g++ " + source_file + " -o " + exe_file + " -O2 -lm -DONLINE_JUDGE || true", shell=True, stderr=subprocess.STDOUT)
-    os.remove(source_file)
-
-    if os.path.isfile(des):
-        return True, output
-    else:
-        return False, output
-
-
-def format_ans(s):
-    s = s.replace('\n', ' ').replace('\r', ' ')
-    s += " "
-    last = " "
-    ret = ""
-    for c in s:
-        if c == " " and last == " ":
-            continue
-        ret += c
-        last = c
-    return ret
-
-
-def check_ans(std_ans, out):
-    with open(std_ans) as f:
-        sa = f.read()
-    with open(out) as f:
-        ou = f.read()
-    sa = format_ans(sa)
-    ou = format_ans(ou)
-    if sa == ou:
-        return True
-    else:
-        return False
-
+    
 
 def get_judge_task():
     global _GET_TASK_URL, _SESSION_ID
@@ -123,75 +79,65 @@ def get_testdata_dir(testdata_name):
     return testdata_dir
 
 
-def shorter_read(file_name, max_len):
-    with open(file_name) as f:
-        s = f.read(max_len + 10)
-        if len(s) > max_len:
-            s = s[:max_len] + "..."
-    return s
+def write_src(source, target):
+    if os.path.isfile(target):
+        os.remove(target)
+    with codecs.open(target, "w", "utf-8") as f:
+        f.write(source)
 
 
-def run(exe_file, std_in, std_out, time_limit, memory_limit):
-    result_str = (
-        'Accepted',
-        'Presentation Error',
-        'Time Limit Exceed',
-        'Memory Limit Exceed',
-        'Wrong Answer',
-        'Runtime Error',
-        'Output Limit Exceed',
-        'Compile Error',
-        'System Error'
-    )
+def run(source_file, std_in, std_out, time_limit, memory_limit):
     user_out = "user_tmp.out"
-
-    std_in_f = open(std_in)
-    user_out_f = open(user_out, 'w')
-
-    run_cfg = {
-        'args': ['./' + exe_file],
-        'fd_in': std_in_f.fileno(),
-        'fd_out': user_out_f.fileno(),
-        'timelimit': time_limit,
-        'memorylimit': memory_limit * 1024,
-    }
-
-    res = lorun.run(run_cfg)
-    std_in_f.close()
-    user_out_f.close()
-
+    
+    CFG = {
+        'language':'C++',
+        'source_name':source_file,
+        'in_file':std_in,
+        'out_file':user_out,
+        'ans_file':std_out,
+        'time_limit':time_limit,
+        'memory_limit':memory_limit,
+        'compile option':['-O2', '-lm', '-DONLINE_JUDGE']
+	}
+	
+	
+    res = TJudger.run(CFG)
+    
     result = {}
-    result['status'] = result_str[res['result']]
-    if res['result'] == 0:
-        if not check_ans(std_out, user_out):
-            result['status'] = 'Wrong Answer'
-    if not 'timeused' in res:
+    result['status'] = res['status']
+    
+    if not 'use_time' in res:
         result['time_used'] = 0
     else:
-        result["time_used"] = res["timeused"]
-    if not 'memoryused' in res:
+        result["time_used"] = res["use_time"]
+    if not 'use_memory' in res:
         result['memory_used'] = 0
     else:
-        result["memory_used"] = res["memoryused"]
-
-    result["input"] = shorter_read(std_in, 120)
-    result["answer"] = shorter_read(std_out, 120)
-    result["user_out"] = shorter_read(user_out, 120)
-
-    os.remove(user_out)
+        result["memory_used"] = res["use_memory"]
+        
+    result['score'] = res['score']
+    
+    if 'in' in res:
+        result["input"] = res['in'][0: min(120, len(res['in']))]
+    if 'ans' in res:
+        result["answer"] = res['ans'][0: min(120, len(res['ans']))]
+    if 'out' in res:
+        result["user_out"] = res['out'][0: min(120, len(res['out']))]
+    if 'compile_info' in res:
+        result['compile_info'] = res['compile_info']
+        
+    if os.path.isfile(user_out):
+        os.remove(user_out)
     return result
 
 
 def judge(source, time_limit, memory_limit, testdata):
-    result = {"status": "Judging", "score": 0, "total_time": 0, "max_memory": 0, "case_num": 0, "compiler_output": ""}
+    result = {"status": "Judging", "score": 0, "total_time": 0, "max_memory": 0, "case_num": 0}
+    target = "tjudger_source_file.cpp"
 
     testdata_dir = get_testdata_dir(testdata)
-    exe_file = "tmp_exe"
 
-    compile_success, result["compiler_output"] = compile_src(source, exe_file)
-    if not compile_success:
-        result["status"] = "Compile Error"
-        return result
+    write_src(source, target)
 
     with open(os.path.join(testdata_dir, "data_rule.txt")) as f:
         data_rule = f.read()
@@ -201,13 +147,18 @@ def judge(source, time_limit, memory_limit, testdata):
     dt_no = lines[0].split()
     std_in = lines[1]
     std_out = lines[2]
-
+    
     for i, no in enumerate(dt_no):
         std_in_file = os.path.join(testdata_dir, std_in.replace("#", str(no)))
         std_out_file = os.path.join(testdata_dir, std_out.replace("#", str(no)))
-
-        res = run(exe_file, std_in_file, std_out_file, time_limit, memory_limit)
-
+		
+        res = run(target, std_in_file, std_out_file, time_limit, memory_limit)
+        
+        if res['status'] == "Compile Error":
+            result['compiler_output'] = res['compile_info']
+            result['status'] = "Compile Error"
+            return result
+        
         result[i] = res
         result["case_num"] += 1
         result["total_time"] += res["time_used"]
@@ -215,9 +166,10 @@ def judge(source, time_limit, memory_limit, testdata):
             result["max_memory"] = res["memory_used"]
 
         if res["status"] == "Accepted":
-            result["score"] += 1.0 / len(dt_no) * 100
+            result["score"] += 1.0 / len(dt_no) * res['score']
         elif result["status"] == "Judging":
             result["status"] = res["status"]
+        
     result["score"] = int(result["score"] + 0.1)
     if result["status"] == "Judging":
         result["status"] = "Accepted"
