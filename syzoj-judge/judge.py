@@ -6,7 +6,7 @@ import zipfile
 import urllib
 import urllib2
 import json
-import TJudger
+import ExTJudger
 import codecs
 import subprocess
 from random import randint
@@ -97,11 +97,10 @@ def run(source_file, std_in, std_out, time_limit, memory_limit):
         'ans_file':std_out,
         'time_limit':time_limit,
         'memory_limit':memory_limit,
-        'compile option':['-O2', '-lm', '-DONLINE_JUDGE']
+        'compile option':['-lm', '-DONLINE_JUDGE']
 	}
 	
-	
-    res = TJudger.run(CFG)
+    res = ExTJudger.run(CFG)
     
     result = {}
     result['status'] = res['status']
