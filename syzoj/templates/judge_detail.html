@@ -44,7 +44,7 @@
         {% endif %}
     </div>
     {% if see_code and see_result%}
-    {% if result["status"] == "Compile Error" %}
+    {% if result["status"] == "Compile Error" and result["compiler_output"] %}
     <div class="am-u-sm-12">
         <pre><code>{{result["compiler_output"]}}</code></pre>
     </div>

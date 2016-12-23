@@ -6,3 +6,4 @@ Scripts
 test.db
 *.zip
 .settings
+/syzoj/static/uploads/*

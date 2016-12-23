@@ -118,12 +118,20 @@ def run(source_file, std_in, std_out, time_limit, memory_limit):
     
     if 'in' in res:
         result["input"] = res['in'][0: min(120, len(res['in']))]
+        if len(res['in']) > 120:
+        	result["input"] += '\n...'
     if 'ans' in res:
         result["answer"] = res['ans'][0: min(120, len(res['ans']))]
+        if len(res['ans']) > 120:
+        	result["answer"] += '\n...'
     if 'out' in res:
         result["user_out"] = res['out'][0: min(120, len(res['out']))]
+        if len(res['out']) > 120:
+        	result["user_out"] += '\n...'
     if 'compile_info' in res:
         result['compile_info'] = res['compile_info']
+        if len(res['compile_info']) > 256:
+        	result["compile_info"] += '\n...'
         
     if os.path.isfile(user_out):
         os.remove(user_out)
