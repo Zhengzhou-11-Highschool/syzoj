@@ -8,5 +8,6 @@ Thanks for Fmuckss and who has made the contributions to SYZOJ.
 
 ~~This project for me to practice Python, it's with many bugs and bad code style now.~~
 
-# ~~syzoj~~
-~~An OnlineJudge System for OI and ACM/icpc.~~
+# SYZOJ
+An OnlineJudge System for OI and ACM/icpc.
+Python 3 Version: [SYOJ](https://github.com/Edify-Studio/SYOJ)
